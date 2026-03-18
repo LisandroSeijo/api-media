@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Auth\Application\UseCases;
+namespace Api\Auth\Application\UseCases;
 
 use Illuminate\Http\Request;
 

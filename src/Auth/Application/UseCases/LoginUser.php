@@ -1,10 +1,10 @@
 <?php
 
-namespace Src\Auth\Application\UseCases;
+namespace Api\Auth\Application\UseCases;
 
-use Src\Auth\Application\DTOs\LoginDTO;
-use Src\Auth\Domain\Repositories\UserRepositoryInterface;
-use Src\Auth\Domain\ValueObjects\Email;
+use Api\Auth\Application\DTOs\LoginDTO;
+use Api\Auth\Domain\Repositories\UserRepositoryInterface;
+use Api\Auth\Domain\ValueObjects\Email;
 use DomainException;
 
 /**
@@ -26,7 +26,7 @@ class LoginUser
      * Ejecuta el caso de uso de login
      * 
      * @param LoginDTO $dto
-     * @return array{user: \Src\Auth\Domain\Entities\User, token: string}
+     * @return array{user: \Api\Auth\Domain\Entities\User, token: string}
      * @throws DomainException
      */
     public function execute(LoginDTO $dto): array
@@ -46,7 +46,7 @@ class LoginUser
 
         // Generar token usando Passport (detalle de implementación)
         // Nota: Accedemos al modelo de Eloquent solo para generar el token
-        $userModel = \Src\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel::find($user->getId());
+        $userModel = \Api\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel::find($user->getId());
         $token = $userModel->createToken('API Token')->accessToken;
 
         return [

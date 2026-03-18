@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Auth\Infrastructure\Persistence\Eloquent\Models;
+namespace Api\Auth\Infrastructure\Persistence\Eloquent\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

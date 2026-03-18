@@ -38,12 +38,12 @@ src/
 - **Ubicación**: `src/{Modulo}/Domain/`
 - **Contiene**: Entities, ValueObjects, Repository Interfaces
 - **Dependencias**: NINGUNA (solo PHP puro, sin Laravel ni Doctrine)
-- **Namespace**: `Src\{Modulo}\Domain\{Subcapa}`
+- **Namespace**: `Api\{Modulo}\Domain\{Subcapa}`
 
 Ejemplo:
 ```php
 // src/Auth/Domain/Entities/User.php
-namespace Src\Auth\Domain\Entities;
+namespace Api\Auth\Domain\Entities;
 
 class User {
     // Solo lógica de negocio pura
@@ -54,14 +54,14 @@ class User {
 - **Ubicación**: `src/{Modulo}/Application/`
 - **Contiene**: UseCases, DTOs
 - **Dependencias**: Solo Domain (interfaces de repositorios)
-- **Namespace**: `Src\{Modulo}\Application\{Subcapa}`
+- **Namespace**: `Api\{Modulo}\Application\{Subcapa}`
 
 Ejemplo:
 ```php
 // src/Auth/Application/UseCases/RegisterUser.php
-namespace Src\Auth\Application\UseCases;
+namespace Api\Auth\Application\UseCases;
 
-use Src\Auth\Domain\Repositories\UserRepositoryInterface;
+use Api\Auth\Domain\Repositories\UserRepositoryInterface;
 
 class RegisterUser {
     public function __construct(
@@ -74,14 +74,14 @@ class RegisterUser {
 - **Ubicación**: `src/{Modulo}/Infrastructure/`
 - **Contiene**: Controllers, Repository Implementations, Eloquent Models, Doctrine Repositories
 - **Dependencias**: Domain + Application + Laravel/Doctrine
-- **Namespace**: `Src\{Modulo}\Infrastructure\{Subcapa}`
+- **Namespace**: `Api\{Modulo}\Infrastructure\{Subcapa}`
 
 Ejemplo:
 ```php
 // src/Auth/Infrastructure/Http/Controllers/AuthController.php
-namespace Src\Auth\Infrastructure\Http\Controllers;
+namespace Api\Auth\Infrastructure\Http\Controllers;
 
-use Src\Auth\Application\UseCases\RegisterUser;
+use Api\Auth\Application\UseCases\RegisterUser;
 
 class AuthController extends Controller {
     public function __construct(

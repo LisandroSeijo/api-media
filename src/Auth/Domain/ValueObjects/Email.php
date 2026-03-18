@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Auth\Domain\ValueObjects;
+namespace Api\Auth\Domain\ValueObjects;
 
 use InvalidArgumentException;
 

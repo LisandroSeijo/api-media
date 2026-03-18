@@ -14,8 +14,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // Auth Module - Bind Repository Interface to Eloquent Implementation
         $this->app->bind(
-            \Src\Auth\Domain\Repositories\UserRepositoryInterface::class,
-            \Src\Auth\Infrastructure\Persistence\Eloquent\Repositories\EloquentUserRepository::class
+            \Api\Auth\Domain\Repositories\UserRepositoryInterface::class,
+            \Api\Auth\Infrastructure\Persistence\Eloquent\Repositories\EloquentUserRepository::class
         );
     }
 

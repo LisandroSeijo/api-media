@@ -1,12 +1,12 @@
 <?php
 
-namespace Src\Auth\Infrastructure\Persistence\Eloquent\Repositories;
+namespace Api\Auth\Infrastructure\Persistence\Eloquent\Repositories;
 
-use Src\Auth\Domain\Entities\User;
-use Src\Auth\Domain\Repositories\UserRepositoryInterface;
-use Src\Auth\Domain\ValueObjects\Email;
-use Src\Auth\Domain\ValueObjects\Password;
-use Src\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel;
+use Api\Auth\Domain\Entities\User;
+use Api\Auth\Domain\Repositories\UserRepositoryInterface;
+use Api\Auth\Domain\ValueObjects\Email;
+use Api\Auth\Domain\ValueObjects\Password;
+use Api\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel;
 use DateTime;
 
 /**

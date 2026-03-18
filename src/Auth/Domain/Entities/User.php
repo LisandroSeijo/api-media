@@ -1,9 +1,9 @@
 <?php
 
-namespace Src\Auth\Domain\Entities;
+namespace Api\Auth\Domain\Entities;
 
-use Src\Auth\Domain\ValueObjects\Email;
-use Src\Auth\Domain\ValueObjects\Password;
+use Api\Auth\Domain\ValueObjects\Email;
+use Api\Auth\Domain\ValueObjects\Password;
 use DateTime;
 
 /**

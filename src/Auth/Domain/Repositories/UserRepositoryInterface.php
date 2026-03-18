@@ -1,9 +1,9 @@
 <?php
 
-namespace Src\Auth\Domain\Repositories;
+namespace Api\Auth\Domain\Repositories;
 
-use Src\Auth\Domain\Entities\User;
-use Src\Auth\Domain\ValueObjects\Email;
+use Api\Auth\Domain\Entities\User;
+use Api\Auth\Domain\ValueObjects\Email;
 
 /**
  * User Repository Interface

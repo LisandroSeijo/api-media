@@ -1,13 +1,13 @@
 <?php
 
-namespace Src\Auth\Infrastructure\Http\Controllers;
+namespace Api\Auth\Infrastructure\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Src\Auth\Application\UseCases\RegisterUser;
-use Src\Auth\Application\UseCases\LoginUser;
-use Src\Auth\Application\UseCases\LogoutUser;
-use Src\Auth\Application\DTOs\RegisterUserDTO;
-use Src\Auth\Application\DTOs\LoginDTO;
+use Api\Auth\Application\UseCases\RegisterUser;
+use Api\Auth\Application\UseCases\LoginUser;
+use Api\Auth\Application\UseCases\LogoutUser;
+use Api\Auth\Application\DTOs\RegisterUserDTO;
+use Api\Auth\Application\DTOs\LoginDTO;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use DomainException;
@@ -59,7 +59,7 @@ class AuthController extends Controller
             $user = $this->registerUser->execute($dto);
 
             // Generar token
-            $userModel = \Src\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel::find($user->getId());
+            $userModel = \Api\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel::find($user->getId());
             $token = $userModel->createToken('auth_token')->accessToken;
 
             // Retornar respuesta JSON

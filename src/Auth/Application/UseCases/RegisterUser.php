@@ -1,12 +1,12 @@
 <?php
 
-namespace Src\Auth\Application\UseCases;
+namespace Api\Auth\Application\UseCases;
 
-use Src\Auth\Application\DTOs\RegisterUserDTO;
-use Src\Auth\Domain\Entities\User;
-use Src\Auth\Domain\Repositories\UserRepositoryInterface;
-use Src\Auth\Domain\ValueObjects\Email;
-use Src\Auth\Domain\ValueObjects\Password;
+use Api\Auth\Application\DTOs\RegisterUserDTO;
+use Api\Auth\Domain\Entities\User;
+use Api\Auth\Domain\Repositories\UserRepositoryInterface;
+use Api\Auth\Domain\ValueObjects\Email;
+use Api\Auth\Domain\ValueObjects\Password;
 use DomainException;
 
 /**

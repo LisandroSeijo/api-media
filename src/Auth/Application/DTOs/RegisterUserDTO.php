@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Auth\Application\DTOs;
+namespace Api\Auth\Application\DTOs;
 
 /**
  * Register User DTO
