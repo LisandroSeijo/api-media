@@ -1,58 +1,283 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 API REST con OAuth2.0 - Laravel 13
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Proyecto de API REST desarrollado con Laravel 13, PHP 8.3, MySQL y autenticación OAuth2.0 usando Laravel Passport.
 
-## About Laravel
+## 📋 Stack Tecnológico
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **PHP**: 8.3-fpm
+- **Laravel Framework**: 13.x
+- **MySQL**: 8.0
+- **Nginx**: Alpine
+- **Laravel Passport**: OAuth2.0 Authentication
+- **Docker & Docker Compose**: Containerización
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Instalación
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+### 1. Clonar el repositorio
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <url-del-repositorio>
+cd api
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Iniciar Docker
+```bash
+docker-compose up -d --build
+```
 
-## Contributing
+### 3. Instalar Laravel (si es necesario)
+```bash
+docker-compose exec app composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Copiar archivo de entorno
+```bash
+cp .env.example .env
+```
 
-## Code of Conduct
+### 5. Generar clave de aplicación
+```bash
+docker-compose exec app php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 6. Ejecutar migraciones
+```bash
+docker-compose exec app php artisan migrate
+```
 
-## Security Vulnerabilities
+### 7. Instalar Passport
+```bash
+docker-compose exec app php artisan passport:install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🌐 URLs de Acceso
 
-## License
+- **API REST**: http://localhost:8000/api/v1
+- **PHPMyAdmin**: http://localhost:8080
+  - Servidor: `db`
+  - Usuario: `laravel`
+  - Contraseña: `root`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 📚 Documentación
+
+Consulta la documentación completa del API en:
+- [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) - Documentación completa de endpoints
+- [POSTMAN_COLLECTION.md](./POSTMAN_COLLECTION.md) - Colección para Postman
+
+## 🔐 Endpoints Principales
+
+### Públicos (sin autenticación)
+- `GET /api/v1/health` - Health check
+- `POST /api/v1/register` - Registrar usuario
+- `POST /api/v1/login` - Iniciar sesión
+
+### Protegidos (requieren token)
+- `GET /api/v1/user` - Obtener usuario autenticado
+- `POST /api/v1/logout` - Cerrar sesión
+- `GET /api/v1/posts` - Listar posts
+- `POST /api/v1/posts` - Crear post
+- `GET /api/v1/posts/{id}` - Obtener post
+- `PUT /api/v1/posts/{id}` - Actualizar post
+- `DELETE /api/v1/posts/{id}` - Eliminar post
+
+## 🧪 Probar la API
+
+### Opción 1: Script de prueba automatizado
+```bash
+./test-api.sh
+```
+
+### Opción 2: cURL manual
+```bash
+# 1. Registrar usuario
+curl -X POST http://localhost:8000/api/v1/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "password123",
+    "password_confirmation": "password123"
+  }'
+
+# 2. Guardar el token de la respuesta
+TOKEN="tu_token_aqui"
+
+# 3. Obtener información del usuario
+curl -X GET http://localhost:8000/api/v1/user \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### Opción 3: Postman
+Importa la colección desde `POSTMAN_COLLECTION.md`
+
+## 📝 Comandos Útiles
+
+### Docker
+```bash
+# Ver logs
+docker-compose logs -f app
+
+# Acceder al contenedor
+docker-compose exec app bash
+
+# Detener contenedores
+docker-compose down
+
+# Reiniciar contenedores
+docker-compose restart
+```
+
+### Laravel
+```bash
+# Artisan
+docker-compose exec app php artisan [comando]
+
+# Composer
+docker-compose exec app composer [comando]
+
+# Migraciones
+docker-compose exec app php artisan migrate
+
+# Ver rutas
+docker-compose exec app php artisan route:list
+```
+
+### Passport
+```bash
+# Crear nuevo cliente
+docker-compose exec app php artisan passport:client
+
+# Ver clientes
+docker-compose exec app php artisan passport:client --list
+
+# Limpiar tokens expirados
+docker-compose exec app php artisan passport:purge
+```
+
+## 🗂️ Estructura del Proyecto
+
+```
+.
+├── app/
+│   ├── Http/
+│   │   └── Controllers/
+│   │       └── API/
+│   │           ├── AuthController.php
+│   │           └── PostController.php
+│   └── Models/
+│       └── User.php
+├── config/
+│   ├── auth.php
+│   └── passport.php
+├── database/
+│   └── migrations/
+├── docker/
+│   ├── mysql/
+│   ├── nginx/
+│   └── php/
+├── routes/
+│   ├── api.php
+│   └── web.php
+├── docker-compose.yml
+├── Dockerfile
+├── API_DOCUMENTATION.md
+├── POSTMAN_COLLECTION.md
+├── test-api.sh
+└── README.md
+```
+
+## 🔧 Configuración
+
+### Base de Datos
+Las credenciales se configuran en el archivo `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=laravel
+DB_PASSWORD=root
+```
+
+### OAuth2.0
+Laravel Passport está configurado en:
+- `config/auth.php` - Guard API configurado con Passport
+- `app/Models/User.php` - Trait HasApiTokens incluido
+- `routes/api.php` - Rutas protegidas con middleware `auth:api`
+
+### CORS
+Si necesitas acceder desde un frontend en otro dominio, configura CORS en:
+```bash
+docker-compose exec app php artisan config:publish cors
+```
+
+## 🔍 Características
+
+✅ Autenticación OAuth2.0 con Laravel Passport  
+✅ Registro e inicio de sesión de usuarios  
+✅ Endpoints protegidos con tokens Bearer  
+✅ CRUD completo de posts (ejemplo)  
+✅ Respuestas JSON estandarizadas  
+✅ Validación de datos  
+✅ Manejo de errores  
+✅ Documentación completa  
+✅ Colección de Postman incluida  
+✅ Script de pruebas automatizado  
+✅ Dockerizado y listo para producción  
+
+## 🚀 Próximos Pasos
+
+- [ ] Implementar refresh tokens
+- [ ] Agregar roles y permisos
+- [ ] Implementar rate limiting personalizado
+- [ ] Agregar más endpoints (categorías, comentarios, etc.)
+- [ ] Implementar paginación
+- [ ] Agregar tests unitarios y de integración
+- [ ] Configurar CI/CD
+- [ ] Documentación con Swagger/OpenAPI
+
+## 🐛 Solución de Problemas
+
+### Token inválido o expirado
+```bash
+# Limpiar y regenerar tokens
+docker-compose exec app php artisan passport:purge
+docker-compose exec app php artisan passport:install --force
+```
+
+### Error de conexión a la base de datos
+```bash
+# Verificar que MySQL esté corriendo
+docker-compose ps
+
+# Reiniciar contenedores
+docker-compose restart db app
+```
+
+### Permisos
+```bash
+# Ajustar permisos
+docker-compose exec app chown -R laravel:www-data /var/www
+docker-compose exec app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+```
+
+## 📄 Licencia
+
+Este proyecto es de código abierto bajo la [Licencia MIT](LICENSE).
+
+## 🤝 Contribuir
+
+Las contribuciones son bienvenidas! Por favor:
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📞 Soporte
+
+Para reportar problemas o sugerencias, por favor abre un issue en el repositorio.
+
+---
+
+**Desarrollado con ❤️ usando Laravel 13**
