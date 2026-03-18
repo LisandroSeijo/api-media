@@ -1,0 +1,40 @@
+FROM php:8.3-fpm
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libzip-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+
+# Limpiar cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Instalar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Crear usuario del sistema para ejecutar los comandos de Composer y Artisan
+RUN useradd -G www-data,root -u 1000 -d /home/laravel laravel
+RUN mkdir -p /home/laravel/.composer && \
+    chown -R laravel:laravel /home/laravel
+
+# Establecer directorio de trabajo
+WORKDIR /var/www
+
+# Copiar archivos de la aplicación
+COPY . /var/www
+
+# Cambiar permisos de directorios
+RUN chown -R laravel:www-data /var/www
+
+# Cambiar al usuario laravel
+USER laravel
+
+# Exponer el puerto 9000 y iniciar el servidor php-fpm
+EXPOSE 9000
+CMD ["php-fpm"]
