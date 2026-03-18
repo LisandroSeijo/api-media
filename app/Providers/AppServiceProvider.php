@@ -17,12 +17,6 @@ class AppServiceProvider extends ServiceProvider
             \Src\Auth\Domain\Repositories\UserRepositoryInterface::class,
             \Src\Auth\Infrastructure\Persistence\Eloquent\Repositories\EloquentUserRepository::class
         );
-
-        // Post Module - Bind Repository Interface to Eloquent Implementation
-        $this->app->bind(
-            \Src\Post\Domain\Repositories\PostRepositoryInterface::class,
-            \Src\Post\Infrastructure\Persistence\Eloquent\Repositories\EloquentPostRepository::class
-        );
     }
 
     /**

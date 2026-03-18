@@ -1,7 +1,6 @@
 <?php
 
 use Src\Auth\Infrastructure\Http\Controllers\AuthController;
-use Src\Post\Infrastructure\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,7 +36,4 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
     // Auth routes
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
-    
-    // Posts resource routes
-    Route::apiResource('posts', PostController::class);
 });
