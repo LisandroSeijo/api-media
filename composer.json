@@ -6,18 +6,19 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
-        "laravel/framework": "^13.0",
-        "laravel/passport": "^13.6",
-        "laravel/tinker": "^3.0"
+        "php": "^8.2|^8.3",
+        "laravel-doctrine/orm": "^3.0",
+        "laravel/framework": "^12.0",
+        "laravel/passport": "^12.0",
+        "laravel/tinker": "^2.10"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "laravel/pail": "^1.2.5",
-        "laravel/pint": "^1.27",
+        "laravel/pail": "^1.2",
+        "laravel/pint": "^1.13",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^12.5.12"
+        "nunomaduro/collision": "^8.0",
+        "phpunit/phpunit": "^11.0"
     },
     "autoload": {
         "psr-4": {
@@ -37,8 +38,8 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
             "@php artisan migrate --force",
-            "npm install",
-            "npm run build"
+            "@php artisan passport:install",
+            "@php artisan vendor:publish --provider=\"LaravelDoctrine\\ORM\\DoctrineServiceProvider\" --force"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",

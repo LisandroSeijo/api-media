@@ -1,52 +1,66 @@
-# 🚀 API REST con OAuth2.0 - Laravel 13
+# 🚀 API REST con OAuth2.0 - Laravel 12
 
-Proyecto de API REST desarrollado con Laravel 13, PHP 8.3, MySQL y autenticación OAuth2.0 usando Laravel Passport.
+Proyecto de API REST desarrollado con Laravel 12, PHP 8.3, MySQL, autenticación OAuth2.0 usando Laravel Passport y Doctrine ORM.
 
 ## 📋 Stack Tecnológico
 
 - **PHP**: 8.3-fpm
-- **Laravel Framework**: 13.x
+- **Laravel Framework**: 12.x
 - **MySQL**: 8.0
 - **Nginx**: Alpine
 - **Laravel Passport**: OAuth2.0 Authentication
+- **Laravel Doctrine ORM**: 3.3.2
+- **Doctrine ORM**: 3.6.2
 - **Docker & Docker Compose**: Containerización
 
 ## 🛠️ Instalación
 
-### 1. Clonar el repositorio
+### Opción 1: Instalación Automática (Recomendada)
+
 ```bash
+# 1. Clonar el repositorio
 git clone <url-del-repositorio>
 cd api
-```
 
-### 2. Iniciar Docker
-```bash
+# 2. Iniciar Docker
 docker-compose up -d --build
+
+# 3. Ejecutar script de instalación
+./install.sh
 ```
 
-### 3. Instalar Laravel (si es necesario)
+### Opción 2: Instalación Manual
+
 ```bash
+# 1. Clonar el repositorio
+git clone <url-del-repositorio>
+cd api
+
+# 2. Iniciar Docker
+docker-compose up -d --build
+
+# 3. Instalar dependencias
 docker-compose exec app composer install
-```
 
-### 4. Copiar archivo de entorno
-```bash
+# 4. Configurar entorno
 cp .env.example .env
-```
-
-### 5. Generar clave de aplicación
-```bash
 docker-compose exec app php artisan key:generate
-```
 
-### 6. Ejecutar migraciones
-```bash
+# 5. Ejecutar migraciones
 docker-compose exec app php artisan migrate
+
+# 6. Instalar Passport
+docker-compose exec app php artisan passport:install
+
+# 7. Publicar configuración de Doctrine
+docker-compose exec app php artisan vendor:publish --provider="LaravelDoctrine\ORM\DoctrineServiceProvider"
 ```
 
-### 7. Instalar Passport
+### Opción 3: Usando Composer Scripts
+
 ```bash
-docker-compose exec app php artisan passport:install
+# Después de iniciar Docker
+docker-compose exec app composer setup
 ```
 
 ## 🌐 URLs de Acceso

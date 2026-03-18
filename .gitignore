@@ -22,3 +22,33 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Directorios temporales
+/temp
+/tmp
+*.tmp
+
+# Base de datos SQLite (usamos MySQL)
+*.sqlite
+*.sqlite-journal
+/database/*.sqlite
+/database/*.sqlite-journal
+
+# Claves de OAuth/Passport
+/storage/oauth-*.key
+/storage/*.key
+
+# Cache y compilados
+/bootstrap/cache/*.php
+!/bootstrap/cache/.gitkeep
+/storage/framework/cache/*
+!/storage/framework/cache/.gitkeep
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitkeep
+/storage/framework/views/*
+!/storage/framework/views/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+
+# Docker volumes (si se crean localmente)
+/docker/volumes/

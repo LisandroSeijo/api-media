@@ -18,19 +18,13 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Crear usuario del sistema para ejecutar los comandos de Composer y Artisan
+# Crear usuario del sistema
 RUN useradd -G www-data,root -u 1000 -d /home/laravel laravel
 RUN mkdir -p /home/laravel/.composer && \
     chown -R laravel:laravel /home/laravel
 
 # Establecer directorio de trabajo
 WORKDIR /var/www
-
-# Copiar archivos de la aplicación
-COPY . /var/www
-
-# Cambiar permisos de directorios
-RUN chown -R laravel:www-data /var/www
 
 # Cambiar al usuario laravel
 USER laravel

@@ -1,10 +1,12 @@
-# Reglas de Cursor para API REST Laravel con OAuth2.0
+# Reglas de Cursor para API REST Laravel con OAuth2.0 y Doctrine ORM
 
 ## Stack Tecnológico
 - PHP 8.3
-- Laravel Framework 13.x
+- Laravel Framework 12.x
 - MySQL 8.0
 - Laravel Passport (OAuth2.0)
+- Laravel Doctrine ORM 3.3.2
+- Doctrine ORM 3.6.2
 - Docker & Docker Compose
 - Nginx
 
@@ -86,11 +88,23 @@ try {
 
 ## Mejores Prácticas Laravel
 
-### Modelos
-- Usar Eloquent ORM
-- Definir relaciones claramente
-- Usar fillable o guarded para asignación masiva
-- Castear atributos apropiadamente
+### ORM - Doctrine vs Eloquent
+- **Preferir Doctrine ORM** para el proyecto
+- Las entidades van en `app/Entities/`
+- Usar EntityManager inyectado en constructores
+- Para modelos simples legacy, Eloquent está disponible
+
+### Entidades Doctrine
+- Usar atributos PHP (#[ORM\Entity]) para metadata
+- Siempre definir getters y setters
+- Inicializar colecciones en el constructor
+- Namespace: `App\Entities`
+
+### EntityManager
+- Inyectar `EntityManagerInterface` en controladores
+- Usar `persist()` y `flush()` para cambios
+- Usar transacciones para operaciones múltiples
+- Limpiar con `clear()` en procesos largos
 
 ### Migraciones
 - Crear migraciones para cualquier cambio de base de datos
@@ -131,6 +145,24 @@ docker-compose exec app php artisan db:seed
 ```bash
 docker-compose exec app php artisan passport:install
 docker-compose exec app php artisan passport:client
+```
+
+### Doctrine ORM
+```bash
+# Ver todos los comandos
+docker-compose exec app php artisan list doctrine
+
+# Generar migración
+docker-compose exec app php artisan doctrine:migrations:diff
+
+# Ejecutar migraciones
+docker-compose exec app php artisan doctrine:migrations:migrate
+
+# Validar schema
+docker-compose exec app php artisan doctrine:schema:validate
+
+# Ver entidades
+docker-compose exec app php artisan doctrine:mapping:info
 ```
 
 ## Seguridad
