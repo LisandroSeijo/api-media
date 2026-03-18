@@ -1,0 +1,255 @@
+---
+alwaysApply: true
+description: Arquitectura hexagonal por módulos - organización vertical de código
+---
+
+# Arquitectura Hexagonal por Módulos
+
+## Estructura Obligatoria
+
+El proyecto usa arquitectura hexagonal organizada por módulos verticales (bounded contexts):
+
+```
+src/
+├── Auth/
+│   ├── Domain/
+│   │   ├── Entities/
+│   │   ├── ValueObjects/
+│   │   └── Repositories/
+│   ├── Application/
+│   │   ├── UseCases/
+│   │   └── DTOs/
+│   └── Infrastructure/
+│       ├── Persistence/
+│       └── Http/Controllers/
+├── Post/
+│   ├── Domain/
+│   ├── Application/
+│   └── Infrastructure/
+└── [OtroModulo]/
+    ├── Domain/
+    ├── Application/
+    └── Infrastructure/
+```
+
+## Reglas de Ubicación de Archivos
+
+### Capa Domain (Núcleo del negocio)
+- **Ubicación**: `src/{Modulo}/Domain/`
+- **Contiene**: Entities, ValueObjects, Repository Interfaces
+- **Dependencias**: NINGUNA (solo PHP puro, sin Laravel ni Doctrine)
+- **Namespace**: `Src\{Modulo}\Domain\{Subcapa}`
+
+Ejemplo:
+```php
+// src/Auth/Domain/Entities/User.php
+namespace Src\Auth\Domain\Entities;
+
+class User {
+    // Solo lógica de negocio pura
+}
+```
+
+### Capa Application (Casos de uso)
+- **Ubicación**: `src/{Modulo}/Application/`
+- **Contiene**: UseCases, DTOs
+- **Dependencias**: Solo Domain (interfaces de repositorios)
+- **Namespace**: `Src\{Modulo}\Application\{Subcapa}`
+
+Ejemplo:
+```php
+// src/Auth/Application/UseCases/RegisterUser.php
+namespace Src\Auth\Application\UseCases;
+
+use Src\Auth\Domain\Repositories\UserRepositoryInterface;
+
+class RegisterUser {
+    public function __construct(
+        private UserRepositoryInterface $userRepository
+    ) {}
+}
+```
+
+### Capa Infrastructure (Detalles técnicos)
+- **Ubicación**: `src/{Modulo}/Infrastructure/`
+- **Contiene**: Controllers, Repository Implementations, Eloquent Models, Doctrine Repositories
+- **Dependencias**: Domain + Application + Laravel/Doctrine
+- **Namespace**: `Src\{Modulo}\Infrastructure\{Subcapa}`
+
+Ejemplo:
+```php
+// src/Auth/Infrastructure/Http/Controllers/AuthController.php
+namespace Src\Auth\Infrastructure\Http\Controllers;
+
+use Src\Auth\Application\UseCases\RegisterUser;
+
+class AuthController extends Controller {
+    public function __construct(
+        private RegisterUser $registerUser
+    ) {}
+}
+```
+
+## Reglas de Dependencias (CRÍTICO)
+
+### ✅ Dependencias Permitidas
+1. Domain → NADA (PHP puro)
+2. Application → Domain únicamente
+3. Infrastructure → Domain + Application + Frameworks
+
+### ❌ Dependencias PROHIBIDAS
+- Domain NO puede depender de Application ni Infrastructure
+- Domain NO puede usar Eloquent, Doctrine, Laravel Facades
+- Application NO puede depender de Infrastructure
+- Application NO puede usar Controllers ni implementaciones concretas de repositorios
+
+## Convenciones de Naming
+
+### Entities (Domain)
+- Sustantivos en singular: `User`, `Post`, `Order`
+- Sin sufijos
+- Lógica de negocio incluida
+
+### Value Objects (Domain)
+- Sustantivos descriptivos: `Email`, `Password`, `PostId`
+- Inmutables (readonly properties)
+- Validación en constructor
+
+### Repository Interfaces (Domain)
+- Formato: `{Entity}RepositoryInterface`
+- Ejemplos: `UserRepositoryInterface`, `PostRepositoryInterface`
+- Solo métodos públicos necesarios
+
+### Repository Implementations (Infrastructure)
+- Formato: `{ORM}{Entity}Repository`
+- Ejemplos: `EloquentUserRepository`, `DoctrinePostRepository`
+- Implementan interfaces de Domain
+
+### Use Cases (Application)
+- Formato: `{Verbo}{Sustantivo}`
+- Ejemplos: `RegisterUser`, `CreatePost`, `UpdatePost`, `DeletePost`
+- Un caso de uso = una acción
+
+### DTOs (Application)
+- Formato: `{Acción}DTO`
+- Ejemplos: `RegisterUserDTO`, `LoginDTO`, `CreatePostDTO`
+- Readonly classes en PHP 8.3
+
+### Controllers (Infrastructure)
+- Formato: `{Módulo}Controller`
+- Ejemplos: `AuthController`, `PostController`
+- Delgados: solo validación + llamar use cases + retornar respuestas
+
+## Flujo de Datos Típico
+
+```
+HTTP Request
+    ↓
+Controller (Infrastructure)
+    ↓
+    Valida Request
+    Crea DTO
+    ↓
+Use Case (Application)
+    ↓
+    Usa Repository Interface (Domain)
+    Orquesta Entities y Value Objects
+    ↓
+Repository Implementation (Infrastructure)
+    ↓
+    Accede a BD (Eloquent/Doctrine)
+    Mapea a/desde Entities de Domain
+    ↓
+Use Case retorna Entity
+    ↓
+Controller mapea a JSON
+    ↓
+HTTP Response
+```
+
+## Cuando Crear Nuevo Módulo
+
+Si necesitas agregar una nueva funcionalidad (ej: `Payment`):
+
+1. Crear estructura:
+```
+src/Payment/
+├── Domain/
+│   ├── Entities/
+│   │   └── Payment.php
+│   ├── ValueObjects/
+│   │   └── Amount.php
+│   └── Repositories/
+│       └── PaymentRepositoryInterface.php
+├── Application/
+│   ├── UseCases/
+│   │   └── ProcessPayment.php
+│   └── DTOs/
+│       └── PaymentDTO.php
+└── Infrastructure/
+    ├── Persistence/
+    │   └── Eloquent/
+    │       └── Repositories/
+    │           └── EloquentPaymentRepository.php
+    └── Http/
+        └── Controllers/
+            └── PaymentController.php
+```
+
+2. Registrar en `AppServiceProvider`:
+```php
+$this->app->bind(
+    PaymentRepositoryInterface::class,
+    EloquentPaymentRepository::class
+);
+```
+
+3. Definir rutas en `routes/api.php`
+
+## Inyección de Dependencias
+
+- Controllers inyectan Use Cases (no repositorios directamente)
+- Use Cases inyectan Repository Interfaces (no implementaciones)
+- Repository Implementations se bindean en `AppServiceProvider`
+
+Ejemplo:
+```php
+// ❌ MAL - Controller inyecta repositorio
+class AuthController {
+    public function __construct(private UserRepositoryInterface $repo) {}
+}
+
+// ✅ BIEN - Controller inyecta use case
+class AuthController {
+    public function __construct(private RegisterUser $registerUser) {}
+}
+```
+
+## Eloquent vs Doctrine
+
+- **Auth Module**: Usa Eloquent (por Laravel Passport)
+- **Otros Modules**: Preferir Doctrine ORM
+- Ambos implementan las mismas interfaces de Domain
+- Las entidades de Domain son independientes del ORM
+
+## Principios Clave
+
+1. **Tell Don't Ask**: Entidades toman decisiones, no exponen estado
+2. **Dependency Inversion**: Depende de abstracciones (interfaces), no implementaciones
+3. **Single Responsibility**: Cada clase tiene una responsabilidad
+4. **Separation of Concerns**: Cada capa tiene un propósito claro
+5. **Domain-Driven Design**: El dominio dicta la estructura
+
+## Recordatorios
+
+- ✅ SIEMPRE crear archivos en la ubicación correcta del módulo
+- ✅ SIEMPRE respetar reglas de dependencias
+- ✅ SIEMPRE usar interfaces en Application, implementaciones en Infrastructure
+- ✅ NUNCA poner lógica de negocio en Controllers
+- ✅ NUNCA usar Eloquent/Doctrine en Domain o Application
+- ✅ SIEMPRE crear DTOs para transferir datos entre capas
+- ✅ SIEMPRE documentar con PHPDoc
+
+---
+
+**Esta arquitectura es OBLIGATORIA para todo el proyecto.**
