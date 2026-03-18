@@ -1,0 +1,278 @@
+# Reglas de Cursor para API REST Laravel con OAuth2.0
+
+## Stack Tecnológico
+- PHP 8.3
+- Laravel Framework 13.x
+- MySQL 8.0
+- Laravel Passport (OAuth2.0)
+- Docker & Docker Compose
+- Nginx
+
+## Estructura del Proyecto
+
+### Controladores API
+- Los controladores API deben estar en `app/Http/Controllers/API/`
+- Usar namespace `App\Http\Controllers\API`
+- Extender de `App\Http\Controllers\Controller`
+
+### Rutas API
+- Todas las rutas API deben definirse en `routes/api.php`
+- Usar prefijo `/api/v1` para todas las rutas
+- Rutas públicas: sin middleware
+- Rutas protegidas: middleware `auth:api`
+
+## Convenciones de Código
+
+### Respuestas JSON
+Todas las respuestas de la API deben seguir este formato estándar:
+
+**Respuesta exitosa:**
+```php
+return response()->json([
+    'success' => true,
+    'message' => 'Mensaje descriptivo',
+    'data' => $datos
+], $statusCode);
+```
+
+**Respuesta con error:**
+```php
+return response()->json([
+    'success' => false,
+    'message' => 'Mensaje de error',
+    'error' => $detalles // opcional
+], $statusCode);
+```
+
+### Códigos de Estado HTTP
+- `200` - OK (operación exitosa)
+- `201` - Created (recurso creado)
+- `401` - Unauthorized (no autenticado)
+- `403` - Forbidden (autenticado pero sin permisos)
+- `404` - Not Found (recurso no encontrado)
+- `422` - Unprocessable Entity (error de validación)
+- `500` - Internal Server Error (error del servidor)
+
+### Validación
+- Siempre validar datos de entrada con `$request->validate()`
+- Capturar `ValidationException` para respuestas consistentes
+- Mensajes de validación en español cuando sea apropiado
+
+### Autenticación
+- Usar `Laravel Passport` para OAuth2.0
+- Guard: `auth:api`
+- Obtener usuario autenticado: `auth()->user()` o `$request->user()`
+- Token type: `Bearer`
+
+### Manejo de Errores
+Siempre usar try-catch en los métodos de controladores:
+```php
+try {
+    // Lógica del método
+} catch (ValidationException $e) {
+    return response()->json([
+        'success' => false,
+        'message' => 'Validation error',
+        'errors' => $e->errors()
+    ], 422);
+} catch (\Exception $e) {
+    return response()->json([
+        'success' => false,
+        'message' => 'Error message',
+        'error' => $e->getMessage()
+    ], 500);
+}
+```
+
+## Mejores Prácticas Laravel
+
+### Modelos
+- Usar Eloquent ORM
+- Definir relaciones claramente
+- Usar fillable o guarded para asignación masiva
+- Castear atributos apropiadamente
+
+### Migraciones
+- Crear migraciones para cualquier cambio de base de datos
+- Usar nombres descriptivos
+- Siempre definir método `down()` para rollback
+
+### Controladores
+- Mantener los controladores delgados
+- Lógica de negocio en Services o Actions cuando sea compleja
+- Un método por acción
+- Documentar con PHPDoc
+
+### Naming Conventions
+- Controllers: `PascalCase` + `Controller` (ej: `PostController`)
+- Métodos: `camelCase` (ej: `getUserPosts`)
+- Rutas API: `kebab-case` (ej: `/api/v1/user-posts`)
+- Variables: `camelCase` o `snake_case` según convención Laravel
+
+## Comandos Docker Frecuentes
+
+### Artisan
+```bash
+docker-compose exec app php artisan [comando]
+```
+
+### Composer
+```bash
+docker-compose exec app composer [comando]
+```
+
+### Base de datos
+```bash
+docker-compose exec app php artisan migrate
+docker-compose exec app php artisan db:seed
+```
+
+### Passport
+```bash
+docker-compose exec app php artisan passport:install
+docker-compose exec app php artisan passport:client
+```
+
+## Seguridad
+
+### Autenticación
+- Nunca exponer tokens en logs
+- Siempre usar HTTPS en producción
+- Implementar rate limiting
+- Validar todos los inputs
+
+### Base de datos
+- Usar Eloquent para prevenir SQL injection
+- Nunca almacenar contraseñas en texto plano
+- Usar `Hash::make()` para hashear contraseñas
+
+### Headers importantes
+```php
+'Accept' => 'application/json'
+'Content-Type' => 'application/json'
+'Authorization' => 'Bearer {token}'
+```
+
+## Testing
+
+### Estructura de tests
+- Tests en `tests/Feature/` para tests de API
+- Tests en `tests/Unit/` para lógica de negocio
+- Usar factories para datos de prueba
+- Siempre testear rutas protegidas con y sin autenticación
+
+### Ejecutar tests
+```bash
+docker-compose exec app php artisan test
+```
+
+## Documentación
+
+### Comentarios en código
+- Usar PHPDoc para métodos públicos
+- Documentar parámetros y retornos
+- Explicar lógica compleja con comentarios inline
+
+### Documentación API
+- Mantener `API_DOCUMENTATION.md` actualizado
+- Incluir ejemplos de requests y responses
+- Documentar todos los endpoints
+- Especificar qué endpoints requieren autenticación
+
+## Variables de Entorno
+
+### Archivo .env
+- Nunca commitear el archivo `.env`
+- Usar `.env.example` como plantilla
+- Documentar nuevas variables en README
+
+### Variables importantes
+```env
+APP_ENV=local
+APP_DEBUG=true
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+```
+
+## Reglas Específicas del Proyecto
+
+### Endpoints API
+1. Todos los endpoints deben estar bajo `/api/v1/`
+2. Usar versionado en URLs
+3. Respuestas siempre en JSON
+4. Incluir campo `success` en todas las respuestas
+
+### Autenticación OAuth2.0
+1. Usar Laravel Passport
+2. Tokens de tipo Bearer
+3. Middleware `auth:api` para rutas protegidas
+4. Método `createToken()` para generar tokens
+
+### Base de datos
+1. Host: `db` (nombre del servicio Docker)
+2. Credenciales en `.env`
+3. Usar migraciones para cambios de schema
+4. Seeders para datos de prueba
+
+## Comandos Útiles Rápidos
+
+```bash
+# Ver rutas
+docker-compose exec app php artisan route:list
+
+# Limpiar cache
+docker-compose exec app php artisan cache:clear
+docker-compose exec app php artisan config:clear
+
+# Ver logs
+docker-compose logs -f app
+
+# Acceder al contenedor
+docker-compose exec app bash
+
+# Ejecutar migraciones
+docker-compose exec app php artisan migrate
+
+# Crear controlador
+docker-compose exec app php artisan make:controller API/NombreController
+
+# Crear modelo con migración
+docker-compose exec app php artisan make:model Nombre -m
+```
+
+## Preferencias de Código
+
+1. **Usar español para comentarios**
+2. **Nombres de variables y métodos en inglés** siguiendo convenciones de Laravel
+3. **Consistencia en el código**: seguir el estilo existente
+4. **DRY**: No repetir código, crear funciones reutilizables
+5. **SOLID**: Seguir principios SOLID cuando sea posible
+6. **RESTful**: Seguir convenciones REST para endpoints
+7. **Tell Don't Ask**: Los objetos deben tomar decisiones basadas en su propio estado interno, no exponer su estado para que otros tomen decisiones. Ejemplo: en vez de `if ($user->isActive()) { $user->activate(); }`, usar `$user->ensureIsActive()`
+
+## Cuando agregues nueva funcionalidad
+
+1. Crear controlador en `app/Http/Controllers/API/`
+2. Definir rutas en `routes/api.php`
+3. Implementar validación de datos
+4. Retornar respuestas JSON consistentes
+5. Agregar manejo de errores
+6. Actualizar documentación en `API_DOCUMENTATION.md`
+7. Considerar agregar tests
+
+## Recordatorios Importantes
+
+- ✅ Siempre validar inputs del usuario
+- ✅ Usar try-catch para manejo de errores
+- ✅ Respuestas JSON consistentes
+- ✅ Documentar cambios en la API
+- ✅ Usar middleware `auth:api` para rutas protegidas
+- ✅ Nunca exponer información sensible en respuestas
+- ✅ Mantener los controladores limpios y legibles
+- ✅ Seguir principios RESTful
+- ✅ Testear cambios importantes
+
+---
+
+**Nota**: Estas reglas están diseñadas para mantener consistencia y calidad en el código. Si necesitas desviarte de ellas por una buena razón, documenta el porqué.
