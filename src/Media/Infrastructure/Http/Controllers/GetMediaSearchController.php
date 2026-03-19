@@ -12,9 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Controlador para endpoints de Media
+ * Single Action Controller para buscar media
  */
-class MediaController extends Controller
+class GetMediaSearchController extends Controller
 {
     public function __construct(
         private readonly SearchMedia $searchMedia
@@ -26,7 +26,7 @@ class MediaController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function search(Request $request): JsonResponse
+    public function __invoke(Request $request): JsonResponse
     {
         try {
             // Validar entrada
