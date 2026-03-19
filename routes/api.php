@@ -1,6 +1,7 @@
 <?php
 
 use Api\Auth\Infrastructure\Http\Controllers\AuthController;
+use Api\Media\Infrastructure\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,4 +37,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
     // Auth routes
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+    
+    // Media routes
+    Route::get('/media/search', [MediaController::class, 'search']);
 });

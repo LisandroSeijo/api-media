@@ -17,6 +17,12 @@ class AppServiceProvider extends ServiceProvider
             \Api\Auth\Domain\Repositories\UserRepositoryInterface::class,
             \Api\Auth\Infrastructure\Persistence\Eloquent\Repositories\EloquentUserRepository::class
         );
+
+        // Media Module - Bind Repository Interface to GIPHY Implementation
+        $this->app->bind(
+            \Api\Media\Domain\Repositories\MediaRepositoryInterface::class,
+            \Api\Media\Infrastructure\Persistence\Http\GiphyMediaRepository::class
+        );
     }
 
     /**
