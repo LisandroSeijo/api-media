@@ -2,6 +2,7 @@
 
 use Api\Auth\Infrastructure\Http\Controllers\AuthController;
 use Api\Media\Infrastructure\Http\Controllers\MediaController;
+use Api\Media\Infrastructure\Http\Controllers\GetMediaByIdController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,4 +41,5 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
     
     // Media routes
     Route::get('/media/search', [MediaController::class, 'search']);
+    Route::get('/media/{id}', GetMediaByIdController::class);
 });
