@@ -55,6 +55,7 @@ class PostRegisterUserController extends Controller
                         'id' => $user->getId(),
                         'name' => $user->getName(),
                         'email' => $user->getEmail()->value(),
+                        'role' => $user->getRole()->value,
                         'created_at' => $user->getCreatedAt()->format('Y-m-d H:i:s'),
                     ],
                     'access_token' => $token,

@@ -25,6 +25,7 @@ class GetAuthenticatedUserController extends Controller
                     'id' => $userModel->id,
                     'name' => $userModel->name,
                     'email' => $userModel->email,
+                    'role' => $userModel->role,
                     'created_at' => $userModel->created_at,
                 ]
             ], 200);

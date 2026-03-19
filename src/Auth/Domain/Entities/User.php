@@ -4,6 +4,7 @@ namespace Api\Auth\Domain\Entities;
 
 use Api\Auth\Domain\ValueObjects\Email;
 use Api\Auth\Domain\ValueObjects\Password;
+use Api\Auth\Domain\ValueObjects\Role;
 use DateTime;
 
 /**
@@ -19,6 +20,7 @@ class User
         private string $name,
         private Email $email,
         private Password $password,
+        private Role $role = Role::USER,
         private ?DateTime $createdAt = null,
     ) {
         $this->createdAt = $createdAt ?? new DateTime();
@@ -50,6 +52,11 @@ class User
         return $this->createdAt;
     }
 
+    public function getRole(): Role
+    {
+        return $this->role;
+    }
+
     // Domain logic - Tell Don't Ask
     
     /**
@@ -74,5 +81,41 @@ class User
     public function hasEmail(Email $email): bool
     {
         return $this->email->equals($email);
+    }
+
+    /**
+     * Verifica si el usuario es administrador
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role->isAdmin();
+    }
+
+    /**
+     * Verifica si el usuario es usuario normal
+     */
+    public function isUser(): bool
+    {
+        return $this->role->isUser();
+    }
+
+    /**
+     * Cambia el rol del usuario
+     */
+    public function changeRole(Role $newRole): void
+    {
+        $this->role = $newRole;
+    }
+
+    /**
+     * Asegura que el usuario tenga permisos de administrador
+     * 
+     * @throws \DomainException Si el usuario no es administrador
+     */
+    public function ensureIsAdmin(): void
+    {
+        if (!$this->isAdmin()) {
+            throw new \DomainException('User does not have admin privileges');
+        }
     }
 }

@@ -6,6 +6,7 @@ use Api\Auth\Domain\Entities\User;
 use Api\Auth\Domain\Repositories\UserRepositoryInterface;
 use Api\Auth\Domain\ValueObjects\Email;
 use Api\Auth\Domain\ValueObjects\Password;
+use Api\Auth\Domain\ValueObjects\Role;
 use Api\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel;
 use DateTime;
 
@@ -56,6 +57,7 @@ class EloquentUserRepository implements UserRepositoryInterface
         $model->name = $user->getName();
         $model->email = $user->getEmail()->value();
         $model->password = $user->getPassword()->hash();
+        $model->role = $user->getRole()->value;
         
         // Guardar en la base de datos
         $model->save();
@@ -82,6 +84,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             name: $model->name,
             email: new Email($model->email),
             password: Password::fromHash($model->password),
+            role: Role::from($model->role ?? 'user'),
             createdAt: $model->created_at ? DateTime::createFromFormat('Y-m-d H:i:s', $model->created_at) : null
         );
     }

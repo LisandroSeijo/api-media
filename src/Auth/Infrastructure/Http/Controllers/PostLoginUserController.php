@@ -49,6 +49,7 @@ class PostLoginUserController extends Controller
                         'id' => $result['user']->getId(),
                         'name' => $result['user']->getName(),
                         'email' => $result['user']->getEmail()->value(),
+                        'role' => $result['user']->getRole()->value,
                     ],
                     'access_token' => $result['token'],
                     'token_type' => 'Bearer',

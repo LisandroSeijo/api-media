@@ -16,7 +16,7 @@ use Laravel\Passport\HasApiTokens;
  * Modelo de Eloquent para la persistencia de usuarios.
  * Mantiene la funcionalidad de Laravel Passport para OAuth2.
  */
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'role'])]
 #[Hidden(['password', 'remember_token'])]
 class UserModel extends Authenticatable
 {

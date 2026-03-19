@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Api\Auth\Application\UseCases;
 
 use Api\Auth\Application\DTOs\RegisterUserDTO;
@@ -11,19 +13,19 @@ use Api\Auth\Domain\ValueObjects\Role;
 use DomainException;
 
 /**
- * Register User Use Case
+ * Create Admin User Use Case
  * 
- * Caso de uso para registrar un nuevo usuario en el sistema.
- * Orquesta la lógica de negocio sin depender de detalles de implementación.
+ * Caso de uso para crear un usuario administrador.
+ * Solo debe ser usado por comandos de consola o procesos internos.
  */
-class RegisterUser
+class CreateAdminUser
 {
     public function __construct(
         private UserRepositoryInterface $userRepository
     ) {}
 
     /**
-     * Ejecuta el caso de uso de registro
+     * Ejecuta el caso de uso de creación de admin
      * 
      * @throws DomainException
      */
@@ -36,15 +38,13 @@ class RegisterUser
             throw new DomainException("Email already registered");
         }
 
-        // Crear la entidad de usuario
-        // Por defecto, todos los usuarios registrados son USER
-        // Solo un ADMIN puede crear otros ADMIN (implementar en otro endpoint)
+        // Crear la entidad de usuario con rol ADMIN
         $user = new User(
             id: null,
             name: $dto->name,
             email: $email,
             password: Password::fromPlain($dto->password),
-            role: Role::USER
+            role: Role::ADMIN
         );
 
         // Persistir el usuario

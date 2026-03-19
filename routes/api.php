@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Route;
 // Public routes (no authentication required)
 Route::prefix('v1')->group(function () {
     // Authentication routes
-    Route::post('/register', PostRegisterUserController::class);
     Route::post('/login', PostLoginUserController::class);
     
     // Health check
@@ -41,6 +40,11 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
     // Auth routes
     Route::post('/logout', PostLogoutUserController::class);
     Route::get('/user', GetAuthenticatedUserController::class);
+    
+    // Admin only routes
+    Route::middleware('admin')->group(function () {
+        Route::post('/register', PostRegisterUserController::class);
+    });
     
     // Media routes
     Route::get('/media/search', GetMediaSearchController::class);
