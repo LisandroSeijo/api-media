@@ -106,7 +106,6 @@ class GiphyMediaRepository implements MediaRepositoryInterface
     /**
      * Transforma la respuesta de la API a nuestro formato
      *
-     * @param array $data
      * @return array{data: MediaItem[], pagination: array, meta: array}
      */
     private function transformResponse(array $data): array

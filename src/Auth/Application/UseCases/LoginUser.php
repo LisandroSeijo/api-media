@@ -15,9 +15,6 @@ use DomainException;
  */
 class LoginUser
 {
-    /**
-     * @param UserRepositoryInterface $userRepository
-     */
     public function __construct(
         private UserRepositoryInterface $userRepository
     ) {}
@@ -25,7 +22,6 @@ class LoginUser
     /**
      * Ejecuta el caso de uso de login
      * 
-     * @param LoginDTO $dto
      * @return array{user: \Api\Auth\Domain\Entities\User, token: string}
      * @throws DomainException
      */

@@ -17,9 +17,6 @@ use DomainException;
  */
 class RegisterUser
 {
-    /**
-     * @param UserRepositoryInterface $userRepository
-     */
     public function __construct(
         private UserRepositoryInterface $userRepository
     ) {}
@@ -27,8 +24,6 @@ class RegisterUser
     /**
      * Ejecuta el caso de uso de registro
      * 
-     * @param RegisterUserDTO $dto
-     * @return User
      * @throws DomainException
      */
     public function execute(RegisterUserDTO $dto): User

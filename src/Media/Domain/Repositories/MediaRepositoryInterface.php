@@ -18,9 +18,6 @@ interface MediaRepositoryInterface
     /**
      * Busca media por una consulta
      *
-     * @param SearchQuery $query Término o frase de búsqueda
-     * @param Limit $limit Número máximo de resultados
-     * @param Offset $offset Posición inicial de resultados
      * @return array{data: MediaItem[], pagination: array, meta: array}
      */
     public function search(
@@ -31,9 +28,6 @@ interface MediaRepositoryInterface
 
     /**
      * Obtiene un elemento de media por su ID
-     *
-     * @param string $id ID del elemento
-     * @return MediaItem|null
      */
     public function findById(string $id): ?MediaItem;
 }

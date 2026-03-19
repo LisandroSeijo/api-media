@@ -14,13 +14,6 @@ use DateTime;
  */
 class User
 {
-    /**
-     * @param int|null $id
-     * @param string $name
-     * @param Email $email
-     * @param Password $password
-     * @param DateTime|null $createdAt
-     */
     public function __construct(
         private ?int $id,
         private string $name,
@@ -61,9 +54,6 @@ class User
     
     /**
      * Cambia la contraseña del usuario
-     * 
-     * @param Password $newPassword
-     * @return void
      */
     public function changePassword(Password $newPassword): void
     {
@@ -72,9 +62,6 @@ class User
 
     /**
      * Verifica si la contraseña proporcionada es correcta
-     * 
-     * @param string $plainPassword
-     * @return bool
      */
     public function verifyPassword(string $plainPassword): bool
     {
@@ -83,9 +70,6 @@ class User
 
     /**
      * Verifica si este usuario tiene el email especificado
-     * 
-     * @param Email $email
-     * @return bool
      */
     public function hasEmail(Email $email): bool
     {

@@ -10,11 +10,6 @@ namespace Api\Auth\Application\DTOs;
  */
 readonly class RegisterUserDTO
 {
-    /**
-     * @param string $name
-     * @param string $email
-     * @param string $password
-     */
     public function __construct(
         public string $name,
         public string $email,

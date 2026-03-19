@@ -22,7 +22,6 @@ class SearchMedia
     /**
      * Ejecuta la búsqueda de media
      *
-     * @param SearchMediaDTO $dto
      * @return array{data: array, pagination: array, meta: array}
      * @throws \InvalidArgumentException Si los parámetros son inválidos
      */

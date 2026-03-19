@@ -22,12 +22,6 @@ class PostRegisterUserController extends Controller
         private readonly RegisterUser $registerUser
     ) {}
 
-    /**
-     * Registra un nuevo usuario
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         try {

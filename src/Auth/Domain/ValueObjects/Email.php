@@ -13,7 +13,6 @@ use InvalidArgumentException;
 readonly class Email
 {
     /**
-     * @param string $value
      * @throws InvalidArgumentException
      */
     public function __construct(private string $value)
@@ -23,11 +22,6 @@ readonly class Email
         }
     }
 
-    /**
-     * Obtiene el valor del email
-     * 
-     * @return string
-     */
     public function value(): string
     {
         return $this->value;
@@ -35,20 +29,12 @@ readonly class Email
 
     /**
      * Compara si dos emails son iguales
-     * 
-     * @param Email $other
-     * @return bool
      */
     public function equals(Email $other): bool
     {
         return $this->value === $other->value;
     }
 
-    /**
-     * Representación como string
-     * 
-     * @return string
-     */
     public function __toString(): string
     {
         return $this->value;

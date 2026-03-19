@@ -22,12 +22,6 @@ class PostLoginUserController extends Controller
         private readonly LoginUser $loginUser
     ) {}
 
-    /**
-     * Inicia sesión de usuario
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         try {

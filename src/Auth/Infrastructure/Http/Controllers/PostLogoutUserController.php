@@ -19,12 +19,6 @@ class PostLogoutUserController extends Controller
         private readonly LogoutUser $logoutUser
     ) {}
 
-    /**
-     * Cierra sesión del usuario
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         try {

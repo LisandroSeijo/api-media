@@ -20,12 +20,6 @@ class GetMediaSearchController extends Controller
         private readonly SearchMedia $searchMedia
     ) {}
 
-    /**
-     * Busca media por término o frase
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         try {

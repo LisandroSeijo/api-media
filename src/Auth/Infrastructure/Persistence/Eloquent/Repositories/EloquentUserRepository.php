@@ -74,9 +74,6 @@ class EloquentUserRepository implements UserRepositoryInterface
 
     /**
      * Mapea un UserModel (Eloquent) a una entidad User (Domain)
-     * 
-     * @param UserModel $model
-     * @return User
      */
     private function toDomain(UserModel $model): User
     {

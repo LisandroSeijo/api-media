@@ -14,12 +14,6 @@ use Exception;
  */
 class GetAuthenticatedUserController extends Controller
 {
-    /**
-     * Obtiene el usuario autenticado
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         try {

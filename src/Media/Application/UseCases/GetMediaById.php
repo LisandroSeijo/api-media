@@ -19,8 +19,6 @@ class GetMediaById
     /**
      * Ejecuta la búsqueda de media por ID
      *
-     * @param GetMediaByIdDTO $dto
-     * @return array|null
      * @throws \RuntimeException Si hay error conectando con el proveedor
      */
     public function execute(GetMediaByIdDTO $dto): ?array

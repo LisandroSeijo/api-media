@@ -13,16 +13,11 @@ use InvalidArgumentException;
  */
 readonly class Password
 {
-    /**
-     * @param string $hashedValue
-     */
     private function __construct(private string $hashedValue) {}
 
     /**
      * Crea una instancia desde una contraseña en texto plano
      * 
-     * @param string $plainPassword
-     * @return self
      * @throws InvalidArgumentException
      */
     public static function fromPlain(string $plainPassword): self
@@ -36,9 +31,6 @@ readonly class Password
 
     /**
      * Crea una instancia desde una contraseña ya hasheada
-     * 
-     * @param string $hashedPassword
-     * @return self
      */
     public static function fromHash(string $hashedPassword): self
     {
@@ -47,8 +39,6 @@ readonly class Password
 
     /**
      * Obtiene el hash de la contraseña
-     * 
-     * @return string
      */
     public function hash(): string
     {
@@ -57,9 +47,6 @@ readonly class Password
 
     /**
      * Verifica si una contraseña en texto plano coincide con el hash
-     * 
-     * @param string $plainPassword
-     * @return bool
      */
     public function verify(string $plainPassword): bool
     {

@@ -13,9 +13,6 @@ class LogoutUser
 {
     /**
      * Ejecuta el caso de uso de logout
-     * 
-     * @param Request $request
-     * @return void
      */
     public function execute(Request $request): void
     {

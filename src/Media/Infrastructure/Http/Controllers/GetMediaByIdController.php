@@ -19,13 +19,6 @@ class GetMediaByIdController extends Controller
         private readonly GetMediaById $getMediaById
     ) {}
 
-    /**
-     * Obtiene un elemento de media por su ID
-     *
-     * @param Request $request
-     * @param string $id ID del media
-     * @return JsonResponse
-     */
     public function __invoke(Request $request, string $id): JsonResponse
     {
         try {
