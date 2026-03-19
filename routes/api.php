@@ -6,6 +6,7 @@ use Api\Auth\Infrastructure\Http\Controllers\PostLogoutUserController;
 use Api\Auth\Infrastructure\Http\Controllers\GetAuthenticatedUserController;
 use Api\Media\Infrastructure\Http\Controllers\GetMediaSearchController;
 use Api\Media\Infrastructure\Http\Controllers\GetMediaByIdController;
+use Api\System\Infrastructure\Http\Controllers\GetSystemHealthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,15 +25,8 @@ Route::prefix('v1')->group(function () {
     // Authentication routes
     Route::post('/login', PostLoginUserController::class);
     
-    // Health check
-    Route::get('/health', function () {
-        return response()->json([
-            'success' => true,
-            'message' => 'API is running',
-            'version' => '1.0.0',
-            'timestamp' => now()
-        ]);
-    });
+    // System routes
+    Route::get('/health', GetSystemHealthController::class);
 });
 
 // Protected routes (authentication required)
