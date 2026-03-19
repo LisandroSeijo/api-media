@@ -1,6 +1,9 @@
 <?php
 
-use Api\Auth\Infrastructure\Http\Controllers\AuthController;
+use Api\Auth\Infrastructure\Http\Controllers\PostRegisterUserController;
+use Api\Auth\Infrastructure\Http\Controllers\PostLoginUserController;
+use Api\Auth\Infrastructure\Http\Controllers\PostLogoutUserController;
+use Api\Auth\Infrastructure\Http\Controllers\GetAuthenticatedUserController;
 use Api\Media\Infrastructure\Http\Controllers\GetMediaSearchController;
 use Api\Media\Infrastructure\Http\Controllers\GetMediaByIdController;
 use Illuminate\Support\Facades\Route;
@@ -19,8 +22,8 @@ use Illuminate\Support\Facades\Route;
 // Public routes (no authentication required)
 Route::prefix('v1')->group(function () {
     // Authentication routes
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', PostRegisterUserController::class);
+    Route::post('/login', PostLoginUserController::class);
     
     // Health check
     Route::get('/health', function () {
@@ -36,8 +39,8 @@ Route::prefix('v1')->group(function () {
 // Protected routes (authentication required)
 Route::prefix('v1')->middleware('auth:api')->group(function () {
     // Auth routes
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/user', [AuthController::class, 'user']);
+    Route::post('/logout', PostLogoutUserController::class);
+    Route::get('/user', GetAuthenticatedUserController::class);
     
     // Media routes
     Route::get('/media/search', GetMediaSearchController::class);
