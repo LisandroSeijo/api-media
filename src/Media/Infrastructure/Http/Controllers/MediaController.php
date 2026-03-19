@@ -46,11 +46,11 @@ class MediaController extends Controller
                 'offset.max' => 'El parámetro offset no puede exceder 4999',
             ]);
 
-            // Crear DTO
+            // Crear DTO (con casting a int)
             $dto = new SearchMediaDTO(
                 query: $validated['query'],
-                limit: $validated['limit'] ?? null,
-                offset: $validated['offset'] ?? null,
+                limit: isset($validated['limit']) ? (int) $validated['limit'] : null,
+                offset: isset($validated['offset']) ? (int) $validated['offset'] : null,
             );
 
             // Ejecutar caso de uso

@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Log;
  */
 class GiphyMediaRepository implements MediaRepositoryInterface
 {
-    private const BASE_URL = 'https://api.giphy.com/v1';
-    private const ENDPOINT_SEARCH = '/gifs/search';
-    private const ENDPOINT_BY_ID = '/gifs';
+    private const BASE_URL = 'https://api.giphy.com';
+    private const ENDPOINT_SEARCH = '/v1/gifs/search';
+    private const ENDPOINT_BY_ID = '/v1/gifs';
 
     private Client $client;
     private string $apiKey;
