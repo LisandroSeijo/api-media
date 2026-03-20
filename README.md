@@ -70,6 +70,11 @@ MEDIA_CACHE_DRIVER=redis
 
 # GIPHY API
 GIPHY_API_KEY=your_giphy_api_key_here
+GIPHY_BASE_URL=https://api.giphy.com/v1
+
+MEDIA_CACHE_ENABLED=false
+MEDIA_CACHE_TTL_MINUTES=60
+MEDIA_CACHE_DRIVER=redis
 ```
 
 4. Levantar contenedores Docker:
@@ -113,21 +118,11 @@ La API cuenta con documentación interactiva completa gracias a Swagger/OpenAPI 
 http://localhost:8000/api/documentation
 ```
 
-Desde Swagger UI puedes:
-- 📖 Ver todos los endpoints disponibles
-- 🔍 Explorar request/response schemas
-- 🧪 Probar endpoints directamente desde el navegador
-- 🔐 Autenticarte con tu token Bearer
-- 📋 Ver ejemplos de uso para cada endpoint
 
 **Regenerar documentación:**
 ```bash
 docker-compose exec app php artisan l5-swagger:generate
 ```
-
-### Endpoints disponibles
-
-Ver documentación completa en [`API_ENDPOINTS.md`](API_ENDPOINTS.md)
 
 #### Autenticación
 - `POST /api/v1/login` - Login de usuario
@@ -220,7 +215,6 @@ src/
 
 Ver documentación detallada en:
 - [`docs/diagrams/`](docs/diagrams/) - Diagramas UML
-- `README_ARCHITECTURE.md` - Arquitectura detallada
 
 ## Servicios Docker
 
@@ -237,84 +231,3 @@ Ver documentación detallada en:
 - **API**: http://localhost:8000
 - **Swagger Documentation**: http://localhost:8000/api/documentation
 - **PHPMyAdmin**: http://localhost:8080
-
-## Troubleshooting
-
-### Error: "Class Redis not found"
-
-Si encuentras el error `Class "Redis" not found`, significa que la extensión PHP Redis no está instalada. 
-
-**Solución:**
-
-1. Verifica que el `Dockerfile` incluya la instalación de Redis:
-```dockerfile
-# Instalar Redis extension
-RUN pecl install redis \
-    && docker-php-ext-enable redis
-```
-
-2. Reconstruye el contenedor:
-```bash
-docker-compose down
-docker-compose build --no-cache app
-docker-compose up -d
-```
-
-3. Verifica que Redis esté instalado:
-```bash
-docker-compose exec app php -m | grep redis
-# Debería mostrar: redis
-```
-
-4. Prueba la conexión:
-```bash
-docker-compose exec app php artisan tinker --execute="Cache::put('test', 'ok', 60); echo Cache::get('test');"
-# Debería mostrar: ok
-```
-
-### Redis no está respondiendo
-
-```bash
-# Verificar estado de Redis
-docker-compose ps redis
-
-# Ver logs de Redis
-docker-compose logs redis --tail 50
-
-# Reiniciar Redis
-docker-compose restart redis
-
-# Probar conexión
-docker-compose exec redis redis-cli ping
-# Debería mostrar: PONG
-```
-
-### Limpiar caché
-
-```bash
-# Limpiar cache de Laravel
-docker-compose exec app php artisan cache:clear
-docker-compose exec app php artisan config:clear
-
-# Ver claves en Redis
-docker-compose exec redis redis-cli KEYS "*"
-
-# Limpiar toda la base de datos de Redis (¡cuidado!)
-docker-compose exec redis redis-cli FLUSHDB
-```
-
-### Problemas de permisos
-
-```bash
-# Dar permisos correctos
-docker-compose exec app chown -R laravel:laravel /var/www/storage
-docker-compose exec app chmod -R 775 /var/www/storage
-```
-
-## Licencia
-
-[Especificar licencia]
-
-## Contribuir
-
-[Instrucciones para contribuir]
