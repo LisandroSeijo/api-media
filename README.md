@@ -75,6 +75,14 @@ GIPHY_BASE_URL=https://api.giphy.com/v1
 MEDIA_CACHE_ENABLED=false
 MEDIA_CACHE_TTL_MINUTES=60
 MEDIA_CACHE_DRIVER=redis
+
+# Edita tu archivo .env y agrega:
+GIPHY_API_KEY=
+GIPHY_BASE_URL=https://api.giphy.com/v1
+
+MEDIA_CACHE_ENABLED=false
+MEDIA_CACHE_TTL_MINUTES=60
+MEDIA_CACHE_DRIVER=redis
 ```
 
 4. Levantar contenedores Docker:
