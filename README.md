@@ -25,6 +25,7 @@ API REST construida con Laravel 12, OAuth2.0 (Passport), Doctrine ORM y Redis Ca
 - ✅ Specifications Pattern para validaciones
 - ✅ Value Objects y Entities
 - ✅ Dependency Injection
+- ✅ **Documentación Swagger/OpenAPI 3.0**
 
 ## Instalación
 
@@ -102,6 +103,27 @@ docker-compose exec app php artisan create:admin
 ```
 
 ## Uso
+
+### Documentación Interactiva (Swagger UI)
+
+La API cuenta con documentación interactiva completa gracias a Swagger/OpenAPI 3.0.
+
+**Acceder a Swagger UI:**
+```
+http://localhost:8000/api/documentation
+```
+
+Desde Swagger UI puedes:
+- 📖 Ver todos los endpoints disponibles
+- 🔍 Explorar request/response schemas
+- 🧪 Probar endpoints directamente desde el navegador
+- 🔐 Autenticarte con tu token Bearer
+- 📋 Ver ejemplos de uso para cada endpoint
+
+**Regenerar documentación:**
+```bash
+docker-compose exec app php artisan l5-swagger:generate
+```
 
 ### Endpoints disponibles
 
@@ -213,6 +235,7 @@ Ver documentación detallada en:
 ## URLs
 
 - **API**: http://localhost:8000
+- **Swagger Documentation**: http://localhost:8000/api/documentation
 - **PHPMyAdmin**: http://localhost:8080
 
 ## Licencia
