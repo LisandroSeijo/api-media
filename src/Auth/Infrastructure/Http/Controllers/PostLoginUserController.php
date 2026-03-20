@@ -43,16 +43,11 @@ class PostLoginUserController extends Controller
             // Retornar respuesta JSON
             return response()->json([
                 'success' => true,
-                'message' => 'Login successful',
+                'message' => 'Login exitoso',
                 'data' => [
-                    'user' => [
-                        'id' => $result['user']->getId(),
-                        'name' => $result['user']->getName(),
-                        'email' => $result['user']->getEmail()->value(),
-                        'role' => $result['user']->getRole()->value,
-                    ],
                     'access_token' => $result['token'],
                     'token_type' => 'Bearer',
+                    'expires_at' => $result['expires_at'],
                 ]
             ], 200);
 
@@ -65,7 +60,7 @@ class PostLoginUserController extends Controller
         } catch (DomainException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => 'Credenciales inválidas'
             ], 401);
         } catch (Exception $e) {
             return response()->json([

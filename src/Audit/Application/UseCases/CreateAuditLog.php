@@ -7,13 +7,8 @@ namespace Api\Audit\Application\UseCases;
 use Api\Audit\Application\DTOs\CreateAuditLogDTO;
 use Api\Audit\Domain\Entities\AuditLog;
 use Api\Audit\Domain\Repositories\AuditLogRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 
-/**
- * Create Audit Log Use Case
- * 
- * Crea un registro de auditoría en el sistema.
- */
 class CreateAuditLog
 {
     public function __construct(
@@ -32,7 +27,7 @@ class CreateAuditLog
             responseBody: $dto->responseBody,
             ipAddress: $dto->ipAddress,
             userAgent: $dto->userAgent,
-            createdAt: new DateTime()
+            createdAt: new DateTimeImmutable()
         );
 
         return $this->auditLogRepository->save($auditLog);

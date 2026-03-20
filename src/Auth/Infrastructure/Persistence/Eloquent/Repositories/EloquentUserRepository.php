@@ -79,12 +79,17 @@ class EloquentUserRepository implements UserRepositoryInterface
      */
     private function toDomain(UserModel $model): User
     {
+        // El modelo ya castea 'role' a Role enum, pero puede ser string o Role
+        $role = $model->role instanceof Role 
+            ? $model->role 
+            : Role::from($model->role ?? 'user');
+
         return new User(
             id: $model->id,
             name: $model->name,
             email: new Email($model->email),
             password: Password::fromHash($model->password),
-            role: Role::from($model->role ?? 'user'),
+            role: $role,
             createdAt: $model->created_at ? DateTime::createFromFormat('Y-m-d H:i:s', $model->created_at) : null
         );
     }

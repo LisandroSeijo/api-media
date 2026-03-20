@@ -40,6 +40,21 @@ class UserModel extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => \Api\Auth\Domain\ValueObjects\Role::class,
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        // Manejar tanto string como enum
+        if ($this->role instanceof \Api\Auth\Domain\ValueObjects\Role) {
+            return $this->role === \Api\Auth\Domain\ValueObjects\Role::ADMIN;
+        }
+        return $this->role === 'admin';
+    }
+
+    protected static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
     }
 }

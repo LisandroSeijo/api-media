@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace Api\Audit\Domain\Entities;
 
-use DateTime;
+use DateTimeImmutable;
 
-/**
- * AuditLog Entity
- * 
- * Representa un registro de auditoría del sistema.
- */
 class AuditLog
 {
     public function __construct(
@@ -23,8 +18,32 @@ class AuditLog
         private ?array $responseBody,
         private string $ipAddress,
         private ?string $userAgent,
-        private DateTime $createdAt
+        private DateTimeImmutable $createdAt
     ) {}
+
+    public static function create(
+        ?int $userId,
+        string $service,
+        string $method,
+        array $requestBody,
+        int $responseCode,
+        array $responseBody,
+        string $ipAddress,
+        ?string $userAgent
+    ): self {
+        return new self(
+            id: null,
+            userId: $userId,
+            service: $service,
+            method: $method,
+            requestBody: $requestBody,
+            responseCode: $responseCode,
+            responseBody: $responseBody,
+            ipAddress: $ipAddress,
+            userAgent: $userAgent,
+            createdAt: new DateTimeImmutable()
+        );
+    }
 
     public function getId(): ?int
     {
@@ -71,22 +90,16 @@ class AuditLog
         return $this->userAgent;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    /**
-     * Verifica si la petición fue exitosa (2xx)
-     */
     public function isSuccessful(): bool
     {
         return $this->responseCode >= 200 && $this->responseCode < 300;
     }
 
-    /**
-     * Verifica si la petición fue de un usuario autenticado
-     */
     public function isAuthenticated(): bool
     {
         return $this->userId !== null;

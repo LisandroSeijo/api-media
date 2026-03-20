@@ -25,11 +25,11 @@ class GiphyMediaRepository implements MediaRepositoryInterface
     private Client $client;
     private string $apiKey;
 
-    public function __construct()
+    public function __construct(?Client $client = null)
     {
         $this->apiKey = config('services.giphy.api_key');
         
-        $this->client = new Client([
+        $this->client = $client ?? new Client([
             'base_uri' => self::BASE_URL,
             'timeout' => 10.0,
             'headers' => [

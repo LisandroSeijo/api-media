@@ -43,11 +43,14 @@ class LoginUser
         // Generar token usando Passport (detalle de implementación)
         // Nota: Accedemos al modelo de Eloquent solo para generar el token
         $userModel = \Api\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel::find($user->getId());
-        $token = $userModel->createToken('API Token')->accessToken;
+        $tokenResult = $userModel->createToken('API Token');
+        $token = $tokenResult->accessToken;
+        $expiresAt = $tokenResult->token->expires_at;
 
         return [
             'user' => $user,
-            'token' => $token
+            'token' => $token,
+            'expires_at' => $expiresAt->toIso8601String()
         ];
     }
 }

@@ -28,7 +28,7 @@ class PostLogoutUserController extends Controller
             // Retornar respuesta JSON
             return response()->json([
                 'success' => true,
-                'message' => 'Logout successful'
+                'message' => 'Sesión cerrada exitosamente'
             ], 200);
 
         } catch (Exception $e) {

@@ -42,24 +42,16 @@ class PostRegisterUserController extends Controller
             // Ejecutar Use Case
             $user = $this->registerUser->execute($dto);
 
-            // Generar token
-            $userModel = \Api\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel::find($user->getId());
-            $token = $userModel->createToken('auth_token')->accessToken;
-
             // Retornar respuesta JSON
             return response()->json([
                 'success' => true,
-                'message' => 'User registered successfully',
+                'message' => 'Usuario registrado exitosamente',
                 'data' => [
-                    'user' => [
-                        'id' => $user->getId(),
-                        'name' => $user->getName(),
-                        'email' => $user->getEmail()->value(),
-                        'role' => $user->getRole()->value,
-                        'created_at' => $user->getCreatedAt()->format('Y-m-d H:i:s'),
-                    ],
-                    'access_token' => $token,
-                    'token_type' => 'Bearer',
+                    'id' => $user->getId(),
+                    'name' => $user->getName(),
+                    'email' => $user->getEmail()->value(),
+                    'role' => $user->getRole()->value,
+                    'created_at' => $user->getCreatedAt()->format('Y-m-d H:i:s'),
                 ]
             ], 201);
 

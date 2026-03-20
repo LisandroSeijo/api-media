@@ -28,8 +28,8 @@ class EnsureUserIsAdmin
             ], 401);
         }
 
-        // Verificar que el usuario tenga rol admin
-        if ($user->role !== 'admin') {
+        // Verificar que el usuario tenga rol admin usando el método isAdmin()
+        if (!$user->isAdmin()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Forbidden. Admin privileges required.'
