@@ -7,42 +7,49 @@ namespace Api\Auth\Infrastructure\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Api\Auth\Application\UseCases\RegisterUser;
 use Api\Auth\Application\DTOs\RegisterUserDTO;
+use Api\Auth\Domain\Specifications\RegisterUserSpecification;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
 use DomainException;
 use Exception;
 
-/**
- * Single Action Controller para registrar usuario
- */
 class PostRegisterUserController extends Controller
 {
     public function __construct(
-        private readonly RegisterUser $registerUser
+        private readonly RegisterUser $registerUser,
+        private readonly RegisterUserSpecification $registerSpec
     ) {}
 
     public function __invoke(Request $request): JsonResponse
     {
         try {
-            // Validar request
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255',
-                'password' => 'required|string|min:6',
-            ]);
+            $name = $request->input('name', '');
+            $email = $request->input('email', '');
+            $password = $request->input('password', '');
 
-            // Crear DTO
+            if ($this->registerSpec->hasErrors($name, $email, $password)) {
+                $errors = $this->registerSpec->getValidationErrors($name, $email, $password);
+                
+                $formattedErrors = [];
+                foreach ($errors as $field => $message) {
+                    $formattedErrors[$field] = [$message];
+                }
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error de validación',
+                    'errors' => $formattedErrors,
+                ], 422);
+            }
+
             $dto = new RegisterUserDTO(
-                name: $validated['name'],
-                email: $validated['email'],
-                password: $validated['password']
+                name: $name,
+                email: $email,
+                password: $password
             );
 
-            // Ejecutar Use Case
             $user = $this->registerUser->execute($dto);
 
-            // Retornar respuesta JSON
             return response()->json([
                 'success' => true,
                 'message' => 'Usuario registrado exitosamente',
@@ -55,12 +62,6 @@ class PostRegisterUserController extends Controller
                 ]
             ], 201);
 
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $e->errors()
-            ], 422);
         } catch (DomainException $e) {
             return response()->json([
                 'success' => false,

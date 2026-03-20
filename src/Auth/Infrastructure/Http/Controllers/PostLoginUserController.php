@@ -7,40 +7,47 @@ namespace Api\Auth\Infrastructure\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Api\Auth\Application\UseCases\LoginUser;
 use Api\Auth\Application\DTOs\LoginDTO;
+use Api\Auth\Domain\Specifications\LoginCredentialsSpecification;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
 use DomainException;
 use Exception;
 
-/**
- * Single Action Controller para login de usuario
- */
 class PostLoginUserController extends Controller
 {
     public function __construct(
-        private readonly LoginUser $loginUser
+        private readonly LoginUser $loginUser,
+        private readonly LoginCredentialsSpecification $credentialsSpec
     ) {}
 
     public function __invoke(Request $request): JsonResponse
     {
         try {
-            // Validar request
-            $validated = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
+            $email = $request->input('email', '');
+            $password = $request->input('password', '');
 
-            // Crear DTO
+            if ($this->credentialsSpec->hasErrors($email, $password)) {
+                $errors = $this->credentialsSpec->getValidationErrors($email, $password);
+                
+                $formattedErrors = [];
+                foreach ($errors as $field => $message) {
+                    $formattedErrors[$field] = [$message];
+                }
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error de validación',
+                    'errors' => $formattedErrors,
+                ], 422);
+            }
+
             $dto = new LoginDTO(
-                email: $validated['email'],
-                password: $validated['password']
+                email: $email,
+                password: $password
             );
 
-            // Ejecutar Use Case
             $result = $this->loginUser->execute($dto);
 
-            // Retornar respuesta JSON
             return response()->json([
                 'success' => true,
                 'message' => 'Login exitoso',
@@ -51,12 +58,6 @@ class PostLoginUserController extends Controller
                 ]
             ], 200);
 
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $e->errors()
-            ], 422);
         } catch (DomainException $e) {
             return response()->json([
                 'success' => false,

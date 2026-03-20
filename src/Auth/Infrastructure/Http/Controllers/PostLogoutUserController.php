@@ -10,9 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Exception;
 
-/**
- * Single Action Controller para logout de usuario
- */
 class PostLogoutUserController extends Controller
 {
     public function __construct(
@@ -22,10 +19,8 @@ class PostLogoutUserController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         try {
-            // Ejecutar Use Case
             $this->logoutUser->execute($request);
 
-            // Retornar respuesta JSON
             return response()->json([
                 'success' => true,
                 'message' => 'Sesión cerrada exitosamente'

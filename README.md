@@ -2,6 +2,29 @@
 
 Proyecto de API REST desarrollado con Laravel 12, PHP 8.3, MySQL, autenticación OAuth2.0 usando Laravel Passport y Doctrine ORM.
 
+**Arquitectura**: Hexagonal (Ports & Adapters) con Domain-Driven Design (DDD)
+
+---
+
+## 📚 Documentación
+
+### 🏗️ Diagramas de Arquitectura
+👉 **[Ver Diagramas UML por Módulo](./docs/diagrams/INDEX.md)**
+
+- **[Auth Module](./docs/diagrams/Auth_Module_Diagram.md)** 🔐 - Autenticación OAuth2 y roles
+- **[Media Module](./docs/diagrams/Media_Module_Diagram.md)** 🎬 - Búsqueda de contenido multimedia
+- **[Audit Module](./docs/diagrams/Audit_Module_Diagram.md)** 📝 - Logging automático de requests
+- **[System Module](./docs/diagrams/System_Module_Diagram.md)** ⚙️ - Health checks
+
+### 📖 API
+- **[API Endpoints](./API_ENDPOINTS.md)** - Todos los endpoints con ejemplos cURL
+- **[API Documentation](./API_DOCUMENTATION.md)** - Guía completa de uso
+
+### 📦 Documentación Completa
+👉 **[Acceso a Toda la Documentación](./docs/README.md)**
+
+---
+
 ## 📋 Stack Tecnológico
 
 - **PHP**: 8.3-fpm

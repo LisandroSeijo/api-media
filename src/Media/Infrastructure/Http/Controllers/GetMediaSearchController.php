@@ -6,48 +6,46 @@ namespace Api\Media\Infrastructure\Http\Controllers;
 
 use Api\Media\Application\DTOs\SearchMediaDTO;
 use Api\Media\Application\UseCases\SearchMedia;
+use Api\Media\Domain\Specifications\MediaSearchSpecification;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
-/**
- * Single Action Controller para buscar media
- */
 class GetMediaSearchController extends Controller
 {
     public function __construct(
-        private readonly SearchMedia $searchMedia
+        private readonly SearchMedia $searchMedia,
+        private readonly MediaSearchSpecification $searchSpec
     ) {}
 
     public function __invoke(Request $request): JsonResponse
     {
         try {
-            // Validar entrada
-            $validated = $request->validate([
-                'query' => 'required|string|max:50',
-                'limit' => 'nullable|integer|min:1|max:50',
-                'offset' => 'nullable|integer|min:0|max:4999',
-            ], [
-                'query.required' => 'El parámetro query es requerido',
-                'query.string' => 'El parámetro query debe ser una cadena de texto',
-                'query.max' => 'El parámetro query no puede exceder 50 caracteres',
-                'limit.integer' => 'El parámetro limit debe ser numérico',
-                'limit.min' => 'El parámetro limit debe ser al menos 1',
-                'limit.max' => 'El parámetro limit no puede exceder 50',
-                'offset.integer' => 'El parámetro offset debe ser numérico',
-                'offset.min' => 'El parámetro offset debe ser al menos 0',
-                'offset.max' => 'El parámetro offset no puede exceder 4999',
-            ]);
+            $query = $request->input('query', '');
+            $limit = $request->has('limit') ? (int) $request->input('limit') : null;
+            $offset = $request->has('offset') ? (int) $request->input('offset') : null;
 
-            // Crear DTO (con casting a int)
+            if ($this->searchSpec->hasErrors($query, $limit, $offset)) {
+                $errors = $this->searchSpec->getValidationErrors($query, $limit, $offset);
+                
+                $formattedErrors = [];
+                foreach ($errors as $field => $message) {
+                    $formattedErrors[$field] = [$message];
+                }
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error de validación',
+                    'errors' => $formattedErrors,
+                ], 422);
+            }
+
             $dto = new SearchMediaDTO(
-                query: $validated['query'],
-                limit: isset($validated['limit']) ? (int) $validated['limit'] : null,
-                offset: isset($validated['offset']) ? (int) $validated['offset'] : null,
+                query: $query,
+                limit: $limit,
+                offset: $offset
             );
 
-            // Ejecutar caso de uso
             $result = $this->searchMedia->execute($dto);
 
             return response()->json([
@@ -57,13 +55,6 @@ class GetMediaSearchController extends Controller
                 'pagination' => $result['pagination'],
                 'meta' => $result['meta'],
             ], 200);
-
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error de validación',
-                'errors' => $e->errors(),
-            ], 422);
 
         } catch (\InvalidArgumentException $e) {
             return response()->json([

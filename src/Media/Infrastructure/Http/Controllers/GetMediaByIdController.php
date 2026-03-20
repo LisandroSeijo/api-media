@@ -6,6 +6,7 @@ namespace Api\Media\Infrastructure\Http\Controllers;
 
 use Api\Media\Application\DTOs\GetMediaByIdDTO;
 use Api\Media\Application\UseCases\GetMediaById;
+use Api\Media\Domain\Exceptions\EntityNotFoundException;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,33 +23,21 @@ class GetMediaByIdController extends Controller
     public function __invoke(Request $request, string $id): JsonResponse
     {
         try {
-            // Validar que el ID no esté vacío
-            if (empty($id)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'El parámetro ID es requerido',
-                ], 400);
-            }
-
-            // Crear DTO
-            $dto = new GetMediaByIdDTO(id: $id);
-
-            // Ejecutar caso de uso
+            $dto = new GetMediaByIdDTO($id);
             $result = $this->getMediaById->execute($dto);
-
-            // Si no se encuentra el media
-            if ($result === null) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Media no encontrado',
-                ], 404);
-            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Media encontrado exitosamente',
-                'data' => $result,
+                'data' => $result->toArray(),
             ], 200);
+
+        } catch (EntityNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Media no encontrado',
+                'error' => $e->getMessage(),
+            ], 404);
 
         } catch (\RuntimeException $e) {
             return response()->json([

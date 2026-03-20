@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Exception;
 
-/**
- * Single Action Controller para obtener usuario autenticado
- */
 class GetAuthenticatedUserController extends Controller
 {
     public function __invoke(Request $request): JsonResponse

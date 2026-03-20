@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Api\Media\Domain\ValueObjects;
 
+use Api\Media\Domain\Specifications\OffsetSpecification;
 use InvalidArgumentException;
 
 /**
@@ -11,28 +12,18 @@ use InvalidArgumentException;
  */
 final readonly class Offset
 {
-    private const DEFAULT_OFFSET = 0;
-    private const MIN_OFFSET = 0;
-    private const MAX_OFFSET = 4999;
-
     public function __construct(
-        private int $value = self::DEFAULT_OFFSET
+        private int $value = 0 // Default
     ) {
         $this->validate();
     }
 
     private function validate(): void
     {
-        if ($this->value < self::MIN_OFFSET) {
-            throw new InvalidArgumentException(
-                sprintf('Offset must be at least %d', self::MIN_OFFSET)
-            );
-        }
-
-        if ($this->value > self::MAX_OFFSET) {
-            throw new InvalidArgumentException(
-                sprintf('Offset cannot exceed %d', self::MAX_OFFSET)
-            );
+        $spec = new OffsetSpecification();
+        
+        if (!$spec->isSatisfiedBy($this->value)) {
+            throw new InvalidArgumentException($spec->getErrorMessage($this->value));
         }
     }
 
@@ -43,6 +34,7 @@ final readonly class Offset
 
     public static function default(): self
     {
-        return new self(self::DEFAULT_OFFSET);
+        $spec = new OffsetSpecification();
+        return new self($spec->getDefaultOffset());
     }
 }

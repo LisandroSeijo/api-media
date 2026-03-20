@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Api\Media\Domain\ValueObjects;
 
+use Api\Media\Domain\Specifications\SearchQuerySpecification;
 use InvalidArgumentException;
 
 /**
@@ -11,9 +12,6 @@ use InvalidArgumentException;
  */
 final readonly class SearchQuery
 {
-    private const MAX_QUERY_LENGTH = 50;
-    private const MIN_QUERY_LENGTH = 1;
-
     public function __construct(
         private string $value
     ) {
@@ -22,16 +20,10 @@ final readonly class SearchQuery
 
     private function validate(): void
     {
-        $length = mb_strlen(trim($this->value));
-
-        if ($length < self::MIN_QUERY_LENGTH) {
-            throw new InvalidArgumentException('Search query cannot be empty');
-        }
-
-        if ($length > self::MAX_QUERY_LENGTH) {
-            throw new InvalidArgumentException(
-                sprintf('Search query exceeds maximum length of %d characters', self::MAX_QUERY_LENGTH)
-            );
+        $spec = new SearchQuerySpecification();
+        
+        if (!$spec->isSatisfiedBy($this->value)) {
+            throw new InvalidArgumentException($spec->getErrorMessage($this->value));
         }
     }
 
