@@ -38,8 +38,8 @@ API REST construida con Laravel 12, OAuth2.0 (Passport), Doctrine ORM y Redis Ca
 
 1. Clonar el repositorio:
 ```bash
-git clone <repository-url>
-cd api
+git clone git@github.com:LisandroSeijo/api-media.git
+cd api-media
 ```
 
 2. Copiar archivo de configuración:
