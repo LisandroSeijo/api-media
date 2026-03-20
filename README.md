@@ -189,8 +189,7 @@ Ver documentación detallada en:
 
 | Servicio | Puerto | Descripción |
 |----------|--------|-------------|
-| `app` | - | Aplicación Laravel (PHP 8.3) |
-| `nginx` | 8000 | Servidor web |
+| `nginx` | 8000 | API |
 | `db` | 3306 | MySQL 8.0 |
 | `redis` | 6379 | Redis 7-alpine |
 | `phpmyadmin` | 8080 | Administrador de base de datos |
