@@ -34,21 +34,6 @@ echo "🔐 Configurando permisos..."
 docker-compose exec -T app chmod -R 775 /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
 docker-compose exec -T app chown -R laravel:www-data /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
 
-# Copiar archivo .env
-if [ ! -f .env ]; then
-    echo "📝 Creando archivo .env..."
-    cp .env.example .env
-    
-    # Configurar conexión a MySQL (no SQLite)
-    echo "🔧 Configurando base de datos MySQL en .env..."
-    docker-compose exec -T app sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/' /var/www/.env
-    docker-compose exec -T app sed -i 's/# DB_HOST=127.0.0.1/DB_HOST=db/' /var/www/.env
-    docker-compose exec -T app sed -i 's/# DB_PORT=3306/DB_PORT=3306/' /var/www/.env
-    docker-compose exec -T app sed -i 's/# DB_DATABASE=laravel/DB_DATABASE=laravel/' /var/www/.env
-    docker-compose exec -T app sed -i 's/# DB_USERNAME=root/DB_USERNAME=laravel/' /var/www/.env
-    docker-compose exec -T app sed -i 's/# DB_PASSWORD=/DB_PASSWORD=root/' /var/www/.env
-fi
-
 # Generar clave de aplicación
 echo "🔑 Generando clave de aplicación..."
 docker-compose exec -T app php artisan key:generate
@@ -98,17 +83,5 @@ echo "   - API REST: http://localhost:8000/api/v1"
 echo "   - Health Check: http://localhost:8000/api/v1/health"
 echo ""
 echo "📚 Documentación:"
-echo "   - API_DOCUMENTATION.md - Endpoints del API"
-echo "   - DOCTRINE_GUIDE.md - Guía de Doctrine ORM"
 echo "   - README.md - Guía completa"
-echo ""
-echo "🧪 Probar el API:"
-echo "   ./test-api.sh"
-echo ""
-echo "📚 Comandos útiles:"
-echo "   - Ver logs: docker-compose logs -f app"
-echo "   - Artisan: docker-compose exec app php artisan [comando]"
-echo "   - Composer: docker-compose exec app composer [comando]"
-echo "   - Doctrine: docker-compose exec app php artisan list doctrine"
-echo "   - Detener: docker-compose down"
 echo ""
