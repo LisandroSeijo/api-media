@@ -238,6 +238,79 @@ Ver documentación detallada en:
 - **Swagger Documentation**: http://localhost:8000/api/documentation
 - **PHPMyAdmin**: http://localhost:8080
 
+## Troubleshooting
+
+### Error: "Class Redis not found"
+
+Si encuentras el error `Class "Redis" not found`, significa que la extensión PHP Redis no está instalada. 
+
+**Solución:**
+
+1. Verifica que el `Dockerfile` incluya la instalación de Redis:
+```dockerfile
+# Instalar Redis extension
+RUN pecl install redis \
+    && docker-php-ext-enable redis
+```
+
+2. Reconstruye el contenedor:
+```bash
+docker-compose down
+docker-compose build --no-cache app
+docker-compose up -d
+```
+
+3. Verifica que Redis esté instalado:
+```bash
+docker-compose exec app php -m | grep redis
+# Debería mostrar: redis
+```
+
+4. Prueba la conexión:
+```bash
+docker-compose exec app php artisan tinker --execute="Cache::put('test', 'ok', 60); echo Cache::get('test');"
+# Debería mostrar: ok
+```
+
+### Redis no está respondiendo
+
+```bash
+# Verificar estado de Redis
+docker-compose ps redis
+
+# Ver logs de Redis
+docker-compose logs redis --tail 50
+
+# Reiniciar Redis
+docker-compose restart redis
+
+# Probar conexión
+docker-compose exec redis redis-cli ping
+# Debería mostrar: PONG
+```
+
+### Limpiar caché
+
+```bash
+# Limpiar cache de Laravel
+docker-compose exec app php artisan cache:clear
+docker-compose exec app php artisan config:clear
+
+# Ver claves en Redis
+docker-compose exec redis redis-cli KEYS "*"
+
+# Limpiar toda la base de datos de Redis (¡cuidado!)
+docker-compose exec redis redis-cli FLUSHDB
+```
+
+### Problemas de permisos
+
+```bash
+# Dar permisos correctos
+docker-compose exec app chown -R laravel:laravel /var/www/storage
+docker-compose exec app chmod -R 775 /var/www/storage
+```
+
 ## Licencia
 
 [Especificar licencia]
