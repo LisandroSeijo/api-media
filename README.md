@@ -1,6 +1,4 @@
-# Laravel API con Redis Cache
-
-API REST construida con Laravel 12, OAuth2.0 (Passport), Doctrine ORM y Redis Cache, siguiendo arquitectura hexagonal.
+# Api Media
 
 ## Stack Tecnológico
 
