@@ -85,30 +85,11 @@ MEDIA_CACHE_TTL_MINUTES=60
 MEDIA_CACHE_DRIVER=redis
 ```
 
-4. Levantar contenedores Docker:
+4. Instalar proyecto:
 ```bash
-docker-compose up -d
+./install.sh
 ```
-
-5. Instalar dependencias de Composer:
-```bash
-docker-compose exec app composer install
-```
-
-6. Generar key de aplicación:
-```bash
-docker-compose exec app php artisan key:generate
-```
-
-7. Ejecutar migraciones:
-```bash
-docker-compose exec app php artisan migrate
-```
-
-8. Instalar Laravel Passport:
-```bash
-docker-compose exec app php artisan passport:install
-```
+> **ACLARACIÓN:**  este comando levanta docker, instala composer, y corre todos los comandos necesarios. Es necesario para fixear la instalación de passport.
 
 9. Crear usuario administrador:
 ```bash
@@ -199,26 +180,6 @@ docker-compose exec app php artisan test --testsuite=E2E
 
 # Tests de un módulo específico
 docker-compose exec app php artisan test --filter=Media
-```
-
-## Arquitectura
-
-El proyecto sigue arquitectura hexagonal organizada por módulos:
-
-```
-src/
-├── Auth/           # Módulo de autenticación
-├── Media/          # Módulo de búsqueda de media
-├── Audit/          # Módulo de auditoría
-├── System/         # Módulo de sistema
-└── Shared/         # Código compartido
-    ├── Domain/
-    │   ├── Services/
-    │   │   └── CacheServiceInterface.php
-    │   └── Specifications/
-    └── Infrastructure/
-        └── Services/
-            └── LaravelCacheService.php
 ```
 
 Ver documentación detallada en:
