@@ -181,7 +181,9 @@ docker-compose exec app php artisan test --filter=Media
 ```
 
 Ver documentación detallada en:
+- [`docs/diagrams/`](docs/database/) - DER
 - [`docs/diagrams/`](docs/diagrams/) - Diagramas UML
+- [`docs/diagrams/`](docs/postman/) - Coleccion postman
 
 ## Servicios Docker
 
