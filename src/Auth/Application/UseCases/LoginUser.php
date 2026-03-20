@@ -4,25 +4,27 @@ namespace Api\Auth\Application\UseCases;
 
 use Api\Auth\Application\DTOs\LoginDTO;
 use Api\Auth\Domain\Repositories\UserRepositoryInterface;
+use Api\Auth\Domain\Services\TokenServiceInterface;
 use Api\Auth\Domain\ValueObjects\Email;
 use DomainException;
 
 /**
  * Login User Use Case
  * 
- * Caso de uso para autenticar un usuario.
- * Retorna el usuario y un token de acceso OAuth2.
+ * Autentica un usuario y genera un token de acceso.
+ * Usa TokenService para mantener la capa de Application independiente de Passport.
  */
 class LoginUser
 {
     public function __construct(
-        private UserRepositoryInterface $userRepository
+        private UserRepositoryInterface $userRepository,
+        private TokenServiceInterface $tokenService
     ) {}
 
     /**
      * Ejecuta el caso de uso de login
      * 
-     * @return array{user: \Api\Auth\Domain\Entities\User, token: string}
+     * @return array{user: \Api\Auth\Domain\Entities\User, token: string, expires_at: string}
      * @throws DomainException
      */
     public function execute(LoginDTO $dto): array
@@ -40,17 +42,13 @@ class LoginUser
             throw new DomainException("Invalid credentials");
         }
 
-        // Generar token usando Passport (detalle de implementación)
-        // Nota: Accedemos al modelo de Eloquent solo para generar el token
-        $userModel = \Api\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel::find($user->getId());
-        $tokenResult = $userModel->createToken('API Token');
-        $token = $tokenResult->accessToken;
-        $expiresAt = $tokenResult->token->expires_at;
+        // Generar token usando el servicio de tokens
+        $tokenData = $this->tokenService->generateToken($user, 'API Token');
 
         return [
             'user' => $user,
-            'token' => $token,
-            'expires_at' => $expiresAt->toIso8601String()
+            'token' => $tokenData['token'],
+            'expires_at' => $tokenData['expires_at']
         ];
     }
 }

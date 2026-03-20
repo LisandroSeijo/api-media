@@ -25,17 +25,10 @@ class GiphyMediaRepository implements MediaRepositoryInterface
     private Client $client;
     private string $apiKey;
 
-    public function __construct(?Client $client = null)
+    public function __construct(Client $client)
     {
         $this->apiKey = config('services.giphy.api_key');
-        
-        $this->client = $client ?? new Client([
-            'base_uri' => self::BASE_URL,
-            'timeout' => 10.0,
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-        ]);
+        $this->client = $client;
     }
 
     /**
@@ -45,13 +38,18 @@ class GiphyMediaRepository implements MediaRepositoryInterface
     {
         try {
             $response = $this->client->get(self::ENDPOINT_SEARCH, [
+                'base_uri' => self::BASE_URL,
+                'timeout' => 10.0,
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
                 'query' => [
                     'api_key' => $this->apiKey,
                     'q' => $query->getUrlEncoded(),
                     'limit' => $limit->getValue(),
                     'offset' => $offset->getValue(),
-                    'rating' => 'g', // Filtro de contenido seguro
-                    'lang' => 'es', // Idioma español
+                    'rating' => 'g',
+                    'lang' => 'es',
                 ],
             ]);
 
@@ -80,6 +78,11 @@ class GiphyMediaRepository implements MediaRepositoryInterface
     {
         try {
             $response = $this->client->get(self::ENDPOINT_BY_ID . '/' . $id, [
+                'base_uri' => self::BASE_URL,
+                'timeout' => 10.0,
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
                 'query' => [
                     'api_key' => $this->apiKey,
                 ],
