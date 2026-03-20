@@ -42,6 +42,34 @@ class AppServiceProvider extends ServiceProvider
             \Api\Audit\Domain\Repositories\AuditLogRepositoryInterface::class,
             \Api\Audit\Infrastructure\Persistence\Eloquent\Repositories\EloquentAuditLogRepository::class
         );
+
+        // Shared - Bind Cache Service Interface to Laravel Implementation
+        $this->app->singleton(
+            \Api\Shared\Domain\Services\CacheServiceInterface::class,
+            function ($app) {
+                return new \Api\Shared\Infrastructure\Services\LaravelCacheService(
+                    config('media.cache.driver')
+                );
+            }
+        );
+
+        // Media Module - Bind SearchMedia Use Case configuration
+        $this->app->when(\Api\Media\Application\UseCases\SearchMedia::class)
+            ->needs('$cacheEnabled')
+            ->give(fn() => config('media.cache.enabled'));
+        
+        $this->app->when(\Api\Media\Application\UseCases\SearchMedia::class)
+            ->needs('$cacheTtlMinutes')
+            ->give(fn() => config('media.cache.ttl_minutes'));
+
+        // Media Module - Bind GetMediaById Use Case configuration
+        $this->app->when(\Api\Media\Application\UseCases\GetMediaById::class)
+            ->needs('$cacheEnabled')
+            ->give(fn() => config('media.cache.enabled'));
+        
+        $this->app->when(\Api\Media\Application\UseCases\GetMediaById::class)
+            ->needs('$cacheTtlMinutes')
+            ->give(fn() => config('media.cache.ttl_minutes'));
     }
 
     /**

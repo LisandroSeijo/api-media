@@ -5,14 +5,28 @@ declare(strict_types=1);
 namespace Tests\Feature\Media;
 
 use Api\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel;
+use Api\Shared\Domain\Services\CacheServiceInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use Mockery;
 use Tests\PassportTestCase;
 
 class SearchMediaTest extends PassportTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        
+        // Mock cache service para tests
+        $cacheMock = Mockery::mock(CacheServiceInterface::class);
+        $cacheMock->shouldReceive('has')->andReturn(false);
+        $cacheMock->shouldReceive('get')->andReturn(null);
+        $cacheMock->shouldReceive('put')->andReturn(null);
+        
+        $this->app->instance(CacheServiceInterface::class, $cacheMock);
+    }
 
     public function test_authenticated_user_can_search_media(): void
     {

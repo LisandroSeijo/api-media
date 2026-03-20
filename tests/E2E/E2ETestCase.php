@@ -7,12 +7,14 @@ namespace Tests\E2E;
 use Api\Auth\Domain\ValueObjects\Role;
 use Api\Auth\Infrastructure\Persistence\Eloquent\Models\UserModel;
 use Api\Media\Infrastructure\Persistence\Http\GiphyMediaRepository;
+use Api\Shared\Domain\Services\CacheServiceInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Mockery;
 use Tests\PassportTestCase;
 
 /**
@@ -20,6 +22,7 @@ use Tests\PassportTestCase;
  * 
  * Proporciona helpers reutilizables para:
  * - Mocking de Guzzle/GIPHY
+ * - Mocking de Cache Service
  * - Login de usuarios y admins
  * - Verificación de audit logs
  * - Verificación de tokens revocados
@@ -27,6 +30,27 @@ use Tests\PassportTestCase;
  */
 abstract class E2ETestCase extends PassportTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        
+        // Mock cache service para tests E2E
+        $this->mockCacheService();
+    }
+
+    /**
+     * Mockea el CacheServiceInterface para tests
+     */
+    protected function mockCacheService(): void
+    {
+        $cacheMock = Mockery::mock(CacheServiceInterface::class);
+        $cacheMock->shouldReceive('has')->andReturn(false);
+        $cacheMock->shouldReceive('get')->andReturn(null);
+        $cacheMock->shouldReceive('put')->andReturn(null);
+        
+        $this->app->instance(CacheServiceInterface::class, $cacheMock);
+    }
+
     /**
      * Crea un mock de Guzzle Client con respuestas predefinidas
      * 

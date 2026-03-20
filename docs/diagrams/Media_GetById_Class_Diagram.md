@@ -13,7 +13,10 @@ classDiagram
     %% ============================================
     class GetMediaById {
         -MediaRepositoryInterface mediaRepository
-        +execute(GetMediaByIdDTO) array
+        -CacheServiceInterface cacheService
+        -bool cacheEnabled
+        -int cacheTtlMinutes
+        +execute(GetMediaByIdDTO) MediaItem
     }
 
     class GetMediaByIdDTO {
@@ -22,12 +25,21 @@ classDiagram
     }
 
     %% ============================================
-    %% DOMAIN LAYER - Repositories
+    %% DOMAIN LAYER - Repositories & Services
     %% ============================================
     class MediaRepositoryInterface {
         <<interface>>
         +search(SearchQuery, Limit, Offset) array
         +findById(string) MediaItem|null
+    }
+
+    class CacheServiceInterface {
+        <<interface>>
+        +get(string) mixed
+        +put(string, mixed, int) void
+        +has(string) bool
+        +forget(string) void
+        +flush() void
     }
 
     %% ============================================
@@ -72,8 +84,9 @@ classDiagram
     %% Controller captura Exception
     GetMediaByIdController ..> EntityNotFoundException : catches
 
-    %% Use Case usa Repository Interface
+    %% Use Case usa Repository Interface y Cache
     GetMediaById ..> MediaRepositoryInterface : uses
+    GetMediaById ..> CacheServiceInterface : uses
 
     %% Use Case recibe DTO
     GetMediaById ..> GetMediaByIdDTO : receives
@@ -87,7 +100,9 @@ classDiagram
     %% Notas sobre capas
     note for GetMediaByIdController "INFRASTRUCTURE\nSingle Action Controller\nManeja HTTP Request/Response"
     
-    note for GetMediaById "APPLICATION\nUse Case\nOrquesta la lógica"
+    note for GetMediaById "APPLICATION\nUse Case con Cache\nCache key: media:id:{id}"
+    
+    note for CacheServiceInterface "SHARED DOMAIN\nAbstracción de cache\nPermite Redis, File, Array"
     
     note for GetMediaByIdDTO "APPLICATION\nData Transfer Object\nTransfiere datos entre capas"
     

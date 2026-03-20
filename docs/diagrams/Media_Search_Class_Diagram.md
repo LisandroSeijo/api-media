@@ -14,7 +14,11 @@ classDiagram
     %% ============================================
     class SearchMedia {
         -MediaRepositoryInterface mediaRepository
+        -CacheServiceInterface cacheService
+        -bool cacheEnabled
+        -int cacheTtlMinutes
         +execute(SearchMediaDTO) array
+        -generateCacheKey(SearchMediaDTO) string
     }
 
     class SearchMediaDTO {
@@ -98,12 +102,21 @@ classDiagram
     }
 
     %% ============================================
-    %% DOMAIN LAYER - Repository
+    %% DOMAIN LAYER - Repository & Services
     %% ============================================
     class MediaRepositoryInterface {
         <<interface>>
         +search(SearchQuery, Limit, Offset) array
         +findById(string) MediaItem|null
+    }
+
+    class CacheServiceInterface {
+        <<interface>>
+        +get(string) mixed
+        +put(string, mixed, int) void
+        +has(string) bool
+        +forget(string) void
+        +flush() void
     }
 
     %% ============================================
@@ -134,6 +147,7 @@ classDiagram
 
     %% Use Case dependencies
     SearchMedia ..> MediaRepositoryInterface : uses
+    SearchMedia ..> CacheServiceInterface : uses
     SearchMedia ..> SearchMediaDTO : receives
 
     %% Composite Specification
@@ -160,7 +174,9 @@ classDiagram
     %% Notas sobre capas
     note for GetMediaSearchController "INFRASTRUCTURE\nSingle Action Controller\nManeja HTTP Request/Response\nValida con Specifications"
     
-    note for SearchMedia "APPLICATION\nUse Case\nOrquesta búsqueda de media"
+    note for SearchMedia "APPLICATION\nUse Case\nOrquesta búsqueda con cache\nGenera MD5 hash para cache key"
+    
+    note for CacheServiceInterface "SHARED DOMAIN\nAbstracción de cache\nPermite Redis, File, Array"
     
     note for SearchMediaDTO "APPLICATION\nData Transfer Object\nTransfiere parámetros de búsqueda"
     

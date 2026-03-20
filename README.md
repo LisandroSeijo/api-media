@@ -1,320 +1,224 @@
-# 🚀 API REST con OAuth2.0 - Laravel 12
+# Laravel API con Redis Cache
 
-Proyecto de API REST desarrollado con Laravel 12, PHP 8.3, MySQL, autenticación OAuth2.0 usando Laravel Passport y Doctrine ORM.
+API REST construida con Laravel 12, OAuth2.0 (Passport), Doctrine ORM y Redis Cache, siguiendo arquitectura hexagonal.
 
-**Arquitectura**: Hexagonal (Ports & Adapters) con Domain-Driven Design (DDD)
+## Stack Tecnológico
 
----
+- **PHP** 8.3
+- **Laravel Framework** 12.x
+- **MySQL** 8.0
+- **Redis** 7-alpine
+- **Laravel Passport** (OAuth2.0)
+- **Doctrine ORM** 3.6.2
+- **Docker & Docker Compose**
+- **Nginx**
 
-## 📚 Documentación
+## Características
 
-### 🏗️ Diagramas de Arquitectura
-👉 **[Ver Diagramas UML por Módulo](./docs/diagrams/INDEX.md)**
+- ✅ Arquitectura Hexagonal (Domain, Application, Infrastructure)
+- ✅ Autenticación OAuth2.0 con Laravel Passport
+- ✅ Sistema de roles (Admin/User)
+- ✅ Integración con GIPHY API
+- ✅ Cache Redis para optimización de performance
+- ✅ Audit logs completos
+- ✅ Tests (Unit, Feature, E2E)
+- ✅ Specifications Pattern para validaciones
+- ✅ Value Objects y Entities
+- ✅ Dependency Injection
 
-- **[Auth Module](./docs/diagrams/Auth_Module_Diagram.md)** 🔐 - Autenticación OAuth2 y roles
-- **[Media Module](./docs/diagrams/Media_Module_Diagram.md)** 🎬 - Búsqueda de contenido multimedia
-- **[Audit Module](./docs/diagrams/Audit_Module_Diagram.md)** 📝 - Logging automático de requests
-- **[System Module](./docs/diagrams/System_Module_Diagram.md)** ⚙️ - Health checks
+## Instalación
 
-### 📖 API
-- **[API Endpoints](./API_ENDPOINTS.md)** - Todos los endpoints con ejemplos cURL
-- **[API Documentation](./API_DOCUMENTATION.md)** - Guía completa de uso
+### Prerrequisitos
 
-### 📦 Documentación Completa
-👉 **[Acceso a Toda la Documentación](./docs/README.md)**
+- Docker & Docker Compose
+- Git
 
----
+### Pasos
 
-## 📋 Stack Tecnológico
-
-- **PHP**: 8.3-fpm
-- **Laravel Framework**: 12.x
-- **MySQL**: 8.0
-- **Nginx**: Alpine
-- **Laravel Passport**: OAuth2.0 Authentication
-- **Laravel Doctrine ORM**: 3.3.2
-- **Doctrine ORM**: 3.6.2
-- **Docker & Docker Compose**: Containerización
-
-## 🛠️ Instalación
-
-### Opción 1: Instalación Automática (Recomendada)
-
+1. Clonar el repositorio:
 ```bash
-# 1. Clonar el repositorio
-git clone <url-del-repositorio>
+git clone <repository-url>
 cd api
-
-# 2. Iniciar Docker
-docker-compose up -d --build
-
-# 3. Ejecutar script de instalación
-./install.sh
 ```
 
-### Opción 2: Instalación Manual
-
+2. Copiar archivo de configuración:
 ```bash
-# 1. Clonar el repositorio
-git clone <url-del-repositorio>
-cd api
-
-# 2. Iniciar Docker
-docker-compose up -d --build
-
-# 3. Instalar dependencias
-docker-compose exec app composer install
-
-# 4. Configurar entorno
 cp .env.example .env
-docker-compose exec app php artisan key:generate
-
-# 5. Ejecutar migraciones
-docker-compose exec app php artisan migrate
-
-# 6. Instalar Passport
-docker-compose exec app php artisan passport:install
-
-# 7. Publicar configuración de Doctrine
-docker-compose exec app php artisan vendor:publish --provider="LaravelDoctrine\ORM\DoctrineServiceProvider"
 ```
 
-### Opción 3: Usando Composer Scripts
-
-```bash
-# Después de iniciar Docker
-docker-compose exec app composer setup
-```
-
-## 🌐 URLs de Acceso
-
-- **API REST**: http://localhost:8000/api/v1
-- **PHPMyAdmin**: http://localhost:8080
-  - Servidor: `db`
-  - Usuario: `laravel`
-  - Contraseña: `root`
-
-## 📚 Documentación
-
-Consulta la documentación completa del API en:
-- [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) - Documentación completa de endpoints
-- [POSTMAN_COLLECTION.md](./POSTMAN_COLLECTION.md) - Colección para Postman
-
-## 🔐 Endpoints Principales
-
-### Públicos (sin autenticación)
-- `GET /api/v1/health` - Health check
-- `POST /api/v1/register` - Registrar usuario
-- `POST /api/v1/login` - Iniciar sesión
-
-### Protegidos (requieren token)
-- `GET /api/v1/user` - Obtener usuario autenticado
-- `POST /api/v1/logout` - Cerrar sesión
-- `GET /api/v1/posts` - Listar posts
-- `POST /api/v1/posts` - Crear post
-- `GET /api/v1/posts/{id}` - Obtener post
-- `PUT /api/v1/posts/{id}` - Actualizar post
-- `DELETE /api/v1/posts/{id}` - Eliminar post
-
-## 🧪 Probar la API
-
-### Opción 1: Script de prueba automatizado
-```bash
-./test-api.sh
-```
-
-### Opción 2: cURL manual
-```bash
-# 1. Registrar usuario
-curl -X POST http://localhost:8000/api/v1/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Test User",
-    "email": "test@example.com",
-    "password": "password123",
-    "password_confirmation": "password123"
-  }'
-
-# 2. Guardar el token de la respuesta
-TOKEN="tu_token_aqui"
-
-# 3. Obtener información del usuario
-curl -X GET http://localhost:8000/api/v1/user \
-  -H "Authorization: Bearer $TOKEN"
-```
-
-### Opción 3: Postman
-Importa la colección desde `POSTMAN_COLLECTION.md`
-
-## 📝 Comandos Útiles
-
-### Docker
-```bash
-# Ver logs
-docker-compose logs -f app
-
-# Acceder al contenedor
-docker-compose exec app bash
-
-# Detener contenedores
-docker-compose down
-
-# Reiniciar contenedores
-docker-compose restart
-```
-
-### Laravel
-```bash
-# Artisan
-docker-compose exec app php artisan [comando]
-
-# Composer
-docker-compose exec app composer [comando]
-
-# Migraciones
-docker-compose exec app php artisan migrate
-
-# Ver rutas
-docker-compose exec app php artisan route:list
-```
-
-### Passport
-```bash
-# Crear nuevo cliente
-docker-compose exec app php artisan passport:client
-
-# Ver clientes
-docker-compose exec app php artisan passport:client --list
-
-# Limpiar tokens expirados
-docker-compose exec app php artisan passport:purge
-```
-
-## 🗂️ Estructura del Proyecto
-
-```
-.
-├── app/
-│   ├── Http/
-│   │   └── Controllers/
-│   │       └── API/
-│   │           ├── AuthController.php
-│   │           └── PostController.php
-│   └── Models/
-│       └── User.php
-├── config/
-│   ├── auth.php
-│   └── passport.php
-├── database/
-│   └── migrations/
-├── docker/
-│   ├── mysql/
-│   ├── nginx/
-│   └── php/
-├── routes/
-│   ├── api.php
-│   └── web.php
-├── docker-compose.yml
-├── Dockerfile
-├── API_DOCUMENTATION.md
-├── POSTMAN_COLLECTION.md
-├── test-api.sh
-└── README.md
-```
-
-## 🔧 Configuración
-
-### Base de Datos
-Las credenciales se configuran en el archivo `.env`:
+3. Configurar variables de entorno en `.env`:
 ```env
+# Database
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
 DB_DATABASE=laravel
 DB_USERNAME=laravel
 DB_PASSWORD=root
+
+# Redis
+REDIS_HOST=redis
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+REDIS_CLIENT=phpredis
+
+# Media Cache Configuration
+MEDIA_CACHE_ENABLED=true
+MEDIA_CACHE_TTL_MINUTES=60
+MEDIA_CACHE_DRIVER=redis
+
+# GIPHY API
+GIPHY_API_KEY=your_giphy_api_key_here
 ```
 
-### OAuth2.0
-Laravel Passport está configurado en:
-- `config/auth.php` - Guard API configurado con Passport
-- `app/Models/User.php` - Trait HasApiTokens incluido
-- `routes/api.php` - Rutas protegidas con middleware `auth:api`
-
-### CORS
-Si necesitas acceder desde un frontend en otro dominio, configura CORS en:
+4. Levantar contenedores Docker:
 ```bash
-docker-compose exec app php artisan config:publish cors
+docker-compose up -d
 ```
 
-## 🔍 Características
-
-✅ Autenticación OAuth2.0 con Laravel Passport  
-✅ Registro e inicio de sesión de usuarios  
-✅ Endpoints protegidos con tokens Bearer  
-✅ CRUD completo de posts (ejemplo)  
-✅ Respuestas JSON estandarizadas  
-✅ Validación de datos  
-✅ Manejo de errores  
-✅ Documentación completa  
-✅ Colección de Postman incluida  
-✅ Script de pruebas automatizado  
-✅ Dockerizado y listo para producción  
-
-## 🚀 Próximos Pasos
-
-- [ ] Implementar refresh tokens
-- [ ] Agregar roles y permisos
-- [ ] Implementar rate limiting personalizado
-- [ ] Agregar más endpoints (categorías, comentarios, etc.)
-- [ ] Implementar paginación
-- [ ] Agregar tests unitarios y de integración
-- [ ] Configurar CI/CD
-- [ ] Documentación con Swagger/OpenAPI
-
-## 🐛 Solución de Problemas
-
-### Token inválido o expirado
+5. Instalar dependencias de Composer:
 ```bash
-# Limpiar y regenerar tokens
-docker-compose exec app php artisan passport:purge
-docker-compose exec app php artisan passport:install --force
+docker-compose exec app composer install
 ```
 
-### Error de conexión a la base de datos
+6. Generar key de aplicación:
 ```bash
-# Verificar que MySQL esté corriendo
-docker-compose ps
-
-# Reiniciar contenedores
-docker-compose restart db app
+docker-compose exec app php artisan key:generate
 ```
 
-### Permisos
+7. Ejecutar migraciones:
 ```bash
-# Ajustar permisos
-docker-compose exec app chown -R laravel:www-data /var/www
-docker-compose exec app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+docker-compose exec app php artisan migrate
 ```
 
-## 📄 Licencia
+8. Instalar Laravel Passport:
+```bash
+docker-compose exec app php artisan passport:install
+```
 
-Este proyecto es de código abierto bajo la [Licencia MIT](LICENSE).
+9. Crear usuario administrador:
+```bash
+docker-compose exec app php artisan create:admin
+```
 
-## 🤝 Contribuir
+## Uso
 
-Las contribuciones son bienvenidas! Por favor:
+### Endpoints disponibles
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+Ver documentación completa en [`API_ENDPOINTS.md`](API_ENDPOINTS.md)
 
-## 📞 Soporte
+#### Autenticación
+- `POST /api/v1/login` - Login de usuario
+- `POST /api/v1/logout` - Logout de usuario
+- `GET /api/v1/user` - Obtener usuario autenticado
+- `POST /api/v1/register` - Registrar usuario (solo admin)
 
-Para reportar problemas o sugerencias, por favor abre un issue en el repositorio.
+#### Media
+- `GET /api/v1/media/search` - Buscar media (con cache Redis)
+- `GET /api/v1/media/{id}` - Obtener media por ID (con cache Redis)
 
----
+#### Sistema
+- `GET /api/v1/health` - Health check
 
-**Desarrollado con ❤️ usando Laravel 13**
+### Cache Redis
+
+El sistema utiliza Redis para cachear las respuestas de GIPHY API, mejorando significativamente la performance:
+
+- **Performance**: Reduce latencia de ~100-300ms a <5ms
+- **TTL configurable**: Ajustable desde `.env` con `MEDIA_CACHE_TTL_MINUTES`
+- **Invalidación automática**: El cache expira automáticamente después del TTL
+
+#### Configuración del Cache
+
+Variables disponibles en `.env`:
+
+| Variable | Descripción | Default | Valores |
+|----------|-------------|---------|---------|
+| `MEDIA_CACHE_ENABLED` | Habilita/deshabilita cache | `true` | `true`, `false` |
+| `MEDIA_CACHE_TTL_MINUTES` | TTL en minutos | `60` | Cualquier entero positivo |
+| `MEDIA_CACHE_DRIVER` | Driver de cache | `redis` | `redis`, `file`, `array` |
+
+#### Comandos de Cache
+
+```bash
+# Limpiar cache de Media
+docker-compose exec app php artisan media:cache:clear
+
+# Ver todas las keys de Media en Redis
+docker-compose exec redis redis-cli KEYS "laravel-cache-media:*"
+
+# Conectar a Redis CLI
+docker-compose exec redis redis-cli
+
+# Ver estadísticas de Redis
+docker-compose exec redis redis-cli INFO stats
+```
+
+## Tests
+
+Ejecutar todos los tests:
+```bash
+docker-compose exec app php artisan test
+```
+
+Ejecutar tests específicos:
+```bash
+# Unit tests
+docker-compose exec app php artisan test --testsuite=Unit
+
+# Feature tests
+docker-compose exec app php artisan test --testsuite=Feature
+
+# E2E tests
+docker-compose exec app php artisan test --testsuite=E2E
+
+# Tests de un módulo específico
+docker-compose exec app php artisan test --filter=Media
+```
+
+## Arquitectura
+
+El proyecto sigue arquitectura hexagonal organizada por módulos:
+
+```
+src/
+├── Auth/           # Módulo de autenticación
+├── Media/          # Módulo de búsqueda de media
+├── Audit/          # Módulo de auditoría
+├── System/         # Módulo de sistema
+└── Shared/         # Código compartido
+    ├── Domain/
+    │   ├── Services/
+    │   │   └── CacheServiceInterface.php
+    │   └── Specifications/
+    └── Infrastructure/
+        └── Services/
+            └── LaravelCacheService.php
+```
+
+Ver documentación detallada en:
+- [`docs/diagrams/`](docs/diagrams/) - Diagramas UML
+- `README_ARCHITECTURE.md` - Arquitectura detallada
+
+## Servicios Docker
+
+| Servicio | Puerto | Descripción |
+|----------|--------|-------------|
+| `app` | - | Aplicación Laravel (PHP 8.3) |
+| `nginx` | 8000 | Servidor web |
+| `db` | 3306 | MySQL 8.0 |
+| `redis` | 6379 | Redis 7-alpine |
+| `phpmyadmin` | 8080 | Administrador de base de datos |
+
+## URLs
+
+- **API**: http://localhost:8000
+- **PHPMyAdmin**: http://localhost:8080
+
+## Licencia
+
+[Especificar licencia]
+
+## Contribuir
+
+[Instrucciones para contribuir]
