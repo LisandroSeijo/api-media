@@ -23,6 +23,12 @@ class AppServiceProvider extends ServiceProvider
             \Api\Media\Domain\Repositories\MediaRepositoryInterface::class,
             \Api\Media\Infrastructure\Persistence\Http\GiphyMediaRepository::class
         );
+
+        // Audit Module - Bind Repository Interface to Eloquent Implementation
+        $this->app->bind(
+            \Api\Audit\Domain\Repositories\AuditLogRepositoryInterface::class,
+            \Api\Audit\Infrastructure\Persistence\Eloquent\Repositories\EloquentAuditLogRepository::class
+        );
     }
 
     /**
